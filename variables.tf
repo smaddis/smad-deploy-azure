@@ -18,23 +18,23 @@ variable "project_name" {
 ## Terraform Shared State -module related variables
 #
 # NOTE:
-# Since storage for Terraform Shared State cannot be created in the 
+# Since storage for Terraform Shared State cannot be created in the
 # same Terraform script that creates K8S resources, these variables are
 # also defined in './modules/tfstate_storage_azure/variables.tf'.
-# If you already have a storage for Terraform Shared State, you can 
+# If you already have a storage for Terraform Shared State, you can
 # change these variables to match your configuration.
-# If you plan to customize these variables when creating storage for 
-# Terraform Shared State with './modules/tfstate_storage_azure/main.tf', 
-# you must also change the variables in 
+# If you plan to customize these variables when creating storage for
+# Terraform Shared State with './modules/tfstate_storage_azure/main.tf',
+# you must also change the variables in
 # './modules/tfstate_storage_azure/variables.tf'.
 
 variable "tfstate_resource_group_name_suffix" {
   default = "tfstate-rg"
 }
 
-# 'name' must be unique across the entire Azure service, 
+# 'name' must be unique across the entire Azure service,
 #  not just within the resource group.
-# 'name' can only consist of lowercase letters and numbers, 
+# 'name' can only consist of lowercase letters and numbers,
 #  and must be between 3 and 24 characters long.
 variable "tfstate_storage_account_name_suffix" {
   default = "tfstatesa"
@@ -90,7 +90,7 @@ variable "log_analytics_workspace_location" {
   default = "westeurope"
 }
 
-# refer https://azure.microsoft.com/pricing/details/monitor/ for log analytics pricing 
+# refer https://azure.microsoft.com/pricing/details/monitor/ for log analytics pricing
 variable "log_analytics_workspace_sku" {
   default = "PerGB2018"
 }
@@ -128,4 +128,33 @@ variable "use_separate_storage_rg" {
   default     = false
   type        = bool
   description = "If true, use a separate resource group for storage needs. The resource group must be created via the separate module beforehand."
+}
+
+#
+## Azure Key Vault -module related variables.
+#
+
+# Configuration for various Azure Key Vault READ access policies.
+variable "kv-key-permissions-read" {
+  type        = list(string)
+  description = "List of read key permissions."
+  default     = ["get", "list"]
+}
+
+variable "kv-secret-permissions-read" {
+  type        = list(string)
+  description = "List of read secret permissions."
+  default     = ["get", "list"]
+}
+
+variable "kv-certificate-permissions-read" {
+  type        = list(string)
+  description = "List of read certificate permissions."
+  default     = ["get", "getissuers", "list", "listissuers"]
+}
+
+variable "kv-storage-permissions-read" {
+  type        = list(string)
+  description = "List of read storage permissions."
+  default     = ["get", "getsas", "list", "listsas"]
 }
