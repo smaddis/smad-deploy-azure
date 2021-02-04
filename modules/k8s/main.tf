@@ -1,9 +1,15 @@
-provider "azurerm" {
-    # The "feature" block is required for AzureRM provider 2.x. 
-    # If you are using version 1.x, the "features" block is not allowed.
-    version = "~>2.0"
-    features {}
+terraform {
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = "~> 2.45.1"
+    }
+  }
 }
+
+  provider "azurerm" {
+      features {}
+  }
 
 resource "azurerm_resource_group" "k8s_rg" {
     name     = "${lower(var.project_name)}-${var.k8s_resource_group_name_suffix}"

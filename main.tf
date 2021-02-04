@@ -1,9 +1,4 @@
-provider "azurerm" {
-    # The "feature" block is required for AzureRM provider 2.x. 
-    # If you are using version 1.x, the "features" block is not allowed.
-    version = "~>2.0"
-    features {}
-}
+
 
 # module "tfstate_storage_azure" {
 #     source  = "./modules/tfstate_storage_azure"
@@ -30,6 +25,14 @@ module "container_registry_for_k8s" {
 }
 
 terraform {
+
+      required_providers {
+        azurerm = {
+            source  = "hashicorp/azurerm"
+            version = "~> 2.45.1"
+        }
+    }
+
     backend "azurerm" {
         # Shared state is stored in Azure
         # (https://www.terraform.io/docs/backends/types/azurerm.html)
@@ -51,3 +54,6 @@ terraform {
         key                  = "kuksatrng.tfstate"
     }
 }
+ provider "azurerm" {
+      features {}
+  }

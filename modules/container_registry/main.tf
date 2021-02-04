@@ -1,10 +1,15 @@
-provider "azurerm" {
-    # The "feature" block is required for AzureRM provider 2.x. 
-    # If you are using version 1.x, the "features" block is not allowed.
-    version = "~>2.0"
-    features {}
+terraform {
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = "~> 2.45.1"
+    }
+  }
 }
 
+  provider "azurerm" {
+      features {}
+  }
 # data "azurerm_user_assigned_identity" "aks_kubelet_mi_id" {
 #   name                = "${var.k8s_cluster_managed_identity_id}"
 #   resource_group_name = "${var.k8s_cluster_node_resource_group}"
