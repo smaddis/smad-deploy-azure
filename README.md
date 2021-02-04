@@ -35,7 +35,7 @@ To change your selected subscription
 #### 0.Create a storage account to store shared state for Terraform
 Shared state should always be preferred when working with Terraform.
 
-In order to create one you run `terraform apply` './modules/tfstate_storage_azure/main.tf' module.
+In order to create one you run `$ terraform apply './modules/tfstate_storage_azure/main.tf'` module.
 
 This creates:
 - Azure Resource Group (default name 'kuksatrng-tfstate-rg')
@@ -46,13 +46,12 @@ You can customize naming in variables.tf. Check file content for naming restrict
 
 
 #### 1. Create a Kubernetes cluster in Azure Managed Kubernetes Service (AKS)
+ 
+In order to create one you run `$ terraform apply 'main.tf' -var-file='./example.tfvars'`
 
+You can also run `$ terraform apply 'main.tf'`
+You can customize naming using .tfvars see example.tfvars.
 
-#### 2. Create Azure Container Registry (ACR)
+#### 2. Continue Kuksa Cloud deployment with kubectl, docker and Azure CLI
 
-
-#### 3. Create Azure Key Vault
-
-
-#### 4. Continue Kuksa Cloud deployment with kubectl, docker and Azure CLI
-
+ 
