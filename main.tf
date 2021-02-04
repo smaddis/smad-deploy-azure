@@ -17,6 +17,8 @@ provider "azurerm" {
 module "k8s_cluster_azure" {
     source = "./modules/k8s"
     k8s_agent_count = var.k8s_agent_count
+    k8s_resource_group_name_suffix = var.k8s_resource_group_name_suffix
+    project_name = var.project_name
 }
 
 module "container_registry_for_k8s" {
