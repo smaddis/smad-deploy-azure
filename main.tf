@@ -27,6 +27,16 @@ module "container_registry_for_k8s" {
     k8s_cluster_kubelet_managed_identity_id = module.k8s_cluster_azure.kubelet_object_id
 }
 
+module "container_deployment" {
+  providers    = { kubernetes = kubernetes, helm = helm }
+  depends_on   = [module.k8s_cluster_azure]
+  source       = "./modules/container_deployment"
+
+  #depends_on here or no need? 
+  cluster_name = tostring(module.k8s_cluster_azure.k8s_cluster_name)
+}
+
+
 terraform {
 
       required_providers {
@@ -38,6 +48,10 @@ terraform {
             source = "hashicorp/kubernetes"
             version = ">= 2.0.2"
         }
+        helm = {
+            source  = "hashicorp/helm"
+            version = ">= 2.0.1"
+    }
     }
 
     backend "azurerm" {
@@ -71,4 +85,13 @@ provider "kubernetes" {
     client_key             = base64decode(module.k8s_cluster_azure.client_key)
     client_certificate     = base64decode(module.k8s_cluster_azure.client_certificate)
     cluster_ca_certificate = base64decode(module.k8s_cluster_azure.cluster_ca_certificate)
+}
+
+provider "helm" {
+  kubernetes {
+    host                   = module.k8s_cluster_azure.host
+    client_key             = base64decode(module.k8s_cluster_azure.client_key)
+    client_certificate     = base64decode(module.k8s_cluster_azure.client_certificate)
+    cluster_ca_certificate = base64decode(module.k8s_cluster_azure.cluster_ca_certificate)
+  }
 }

@@ -20,6 +20,7 @@ output "cluster_password" {
 
 output "kube_config" {
     value = azurerm_kubernetes_cluster.k8s_cluster.kube_config_raw
+    sensitive = true
 }
 
 output "host" {
@@ -28,6 +29,10 @@ output "host" {
 
 output "azurerm_user_assigned_identity" {
     value = "${azurerm_kubernetes_cluster.k8s_cluster.name}-agentpool"
+}
+
+output "k8s_cluster_name" {
+    value = azurerm_kubernetes_cluster.k8s_cluster.name
 }
 
 output "k8s_cluster_node_resource_group" {

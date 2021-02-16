@@ -76,5 +76,7 @@ You can use example.tfvars to e.g. customize naming of various objects.
 
 #### 2. Continue Kuksa Cloud deployment with kubectl, docker and Azure CLI
 
+Changes: 
+https://github.com/hashicorp/terraform-provider-kubernetes/blob/master/_examples/aks/README.md
  
 

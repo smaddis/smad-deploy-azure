@@ -19,4 +19,5 @@ output "cr_admin_username" {
 # - if the admin account is enabled.
 output "cr_admin_password" {
     value = azurerm_container_registry.acr.admin_password
+    sensitive = true
 }
