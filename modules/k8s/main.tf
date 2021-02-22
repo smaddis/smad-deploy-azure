@@ -89,3 +89,16 @@ resource "azurerm_kubernetes_cluster" "k8s_cluster" {
         environment = var.environment
     }
 }
+
+resource "kubernetes_storage_class" "azure-disk-retain" {
+  metadata {
+    name = "azure-disk-retain"
+  }
+  storage_provisioner = "kubernetes.io/azure-disk"
+  reclaim_policy      = "Retain"
+  volume_binding_mode = "WaitForFirstConsumer"
+  parameters = {
+    kind = "managed"
+    cachingMode = "ReadOnly"
+  }
+}
