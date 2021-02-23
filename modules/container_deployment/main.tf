@@ -3,12 +3,12 @@
 #https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/guides/getting-started
 #https://www.hashicorp.com/blog/kubernetes-cluster-with-aks-and-terraform
 
-resource "kubernetes_namespace" "test" {
+resource "kubernetes_namespace" "hono" {
   metadata {
-    name = "test"
+    name = "hono"
   }
 }
-
+/*
 resource "kubernetes_deployment" "test" {
   metadata {
     name = "test"
@@ -47,16 +47,16 @@ resource "kubernetes_deployment" "test" {
     }
   }
 }
+*/
+resource "helm_release" "hono" {
+  name       = "hono"
 
-resource helm_release nginx_ingress {
-  name       = "nginx-ingress-controller"
-
-  repository = "https://charts.bitnami.com/bitnami"
-  chart      = "nginx-ingress-controller"
+  repository = "https://eclipse.org/packages/charts"
+  chart      = "hono"
 
   set {
-    name  = "service.type"
-    value = "ClusterIP"
+    name  = "jaegerBackendExample.enabled"
+    value = "true"
   }
 }
 
