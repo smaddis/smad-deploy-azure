@@ -21,6 +21,10 @@ resource "azurerm_container_registry" "acr" {
   resource_group_name      = "${lower(var.project_name)}-${var.container_registry_resource_group_suffix}"
   location                 = var.location
   sku                      = "Standard"
+  
+  lifecycle {
+        prevent_destroy = true
+    }
   admin_enabled            = false
 }
 
