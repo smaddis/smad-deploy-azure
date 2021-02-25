@@ -11,7 +11,7 @@ variable "location" {
 }
 
 variable "project_name" {
-    default = "kuksatrng"
+    default = "rbackuksatrng"
 }
 
 #
@@ -95,3 +95,34 @@ variable cluster_name {
 variable resource_group_name {
     default = "azure-k8stest"
 }
+
+
+#
+## Azure Key Vault -module related variables.
+#
+
+# Configuration for various Azure Key Vault READ access policies.
+variable "kv-key-permissions-read" {
+    type        = list(string)
+    description = "List of read key permissions."
+    default     = [ "get", "list" ]
+}
+
+variable "kv-secret-permissions-read" {
+  type        = list(string)
+  description = "List of read secret permissions."
+  default     = [ "get", "list" ]
+} 
+
+variable "kv-certificate-permissions-read" {
+  type        = list(string)
+  description = "List of read certificate permissions."
+  default     = [ "get", "getissuers", "list", "listissuers" ]
+}
+
+variable "kv-storage-permissions-read" {
+  type        = list(string)
+  description = "List of read storage permissions."
+  default     = [ "get", "getsas", "list", "listsas" ]
+}
+

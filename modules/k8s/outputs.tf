@@ -35,17 +35,17 @@ output "k8s_cluster_node_resource_group" {
 }
 
 output "mi_principal_id" {
-  value = azurerm_kubernetes_cluster.k8s_cluster.identity[0].principal_id
+    value = azurerm_kubernetes_cluster.k8s_cluster.identity[0].principal_id
 }
 
 output "mi_tenant_id" {
-  value = azurerm_kubernetes_cluster.k8s_cluster.identity[0].tenant_id
+    value = azurerm_kubernetes_cluster.k8s_cluster.identity[0].tenant_id
 }
 
 output "kubelet_client_id" {
-  value = azurerm_kubernetes_cluster.k8s_cluster.kubelet_identity[0].client_id
+    value = azurerm_kubernetes_cluster.k8s_cluster.kubelet_identity[0].client_id
 }
 
 output "kubelet_object_id" {
-  value = azurerm_kubernetes_cluster.k8s_cluster.kubelet_identity[0].object_id
+    value = azurerm_kubernetes_cluster.k8s_cluster.kubelet_identity[0].object_id
 }

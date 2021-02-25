@@ -7,7 +7,7 @@ variable "location" {
 }
 
 variable "project_name" {
-    default = "kuksatrng"
+    default = "rbackuksatrng"
 }
 
 # You can use the same resource group that was used with K8S cluster in AKS

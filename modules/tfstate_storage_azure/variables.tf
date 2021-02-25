@@ -7,7 +7,7 @@ variable "location" {
 }
 
 variable "project_name" {
-    default = "kuksatrng"
+    default = "rbackuksatrng"
 }
 
 variable "tfstate_resource_group_name_suffix" {
