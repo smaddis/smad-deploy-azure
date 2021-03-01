@@ -1,5 +1,7 @@
 locals {
   project_name = terraform.workspace == "default" ? var.project_name : "${terraform.workspace}${var.project_name}"
+  k8s_agent_count = terraform.workspace == "default" ? var.k8s_agent_count : 1
+
 }
 
 # module "tfstate_storage_azure" {
