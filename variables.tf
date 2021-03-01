@@ -3,15 +3,15 @@
 #
 
 variable "environment" {
-    default = "development"
+  default = "development"
 }
 
 variable "location" {
-    default = "West Europe"
+  default = "West Europe"
 }
 
 variable "project_name" {
-    default = "kuksatrng"
+  default = "kuksatrng"
 }
 
 #
@@ -29,7 +29,7 @@ variable "project_name" {
 # './modules/tfstate_storage_azure/variables.tf'.
 
 variable "tfstate_resource_group_name_suffix" {
-    default = "tfstate-rg"
+  default = "tfstate-rg"
 }
 
 # 'name' must be unique across the entire Azure service, 
@@ -37,11 +37,11 @@ variable "tfstate_resource_group_name_suffix" {
 # 'name' can only consist of lowercase letters and numbers, 
 #  and must be between 3 and 24 characters long.
 variable "tfstate_storage_account_name_suffix" {
-    default = "tfstatesa"
+  default = "tfstatesa"
 }
 
 variable "tfstate_container_name" {
-    default = "tfstate"
+  default = "tfstate"
 }
 
 #
@@ -49,12 +49,12 @@ variable "tfstate_container_name" {
 #
 
 variable "k8s_agent_count" {
-    default = 3
+  default = 3
 }
 
 # Specify node count for testing purposes
 variable "testing_k8s_agent_count" {
-    default = 1
+  default = 1
 }
 
 # variable "k8s_ssh_public_key" {
@@ -62,41 +62,41 @@ variable "testing_k8s_agent_count" {
 # }
 
 variable "k8s_dns_prefix" {
-    default = "k8stest"
+  default = "k8stest"
 }
 
 variable "k8s_resource_group_name_suffix" {
-    default = "k8stest-rg"
+  default = "k8stest-rg"
 }
 
 variable "k8s_cluster_name_suffix" {
-    default = "k8stest-cluster"
+  default = "k8stest-cluster"
 }
 
 # You can use the same resource group that was used with K8S cluster in AKS
 # 'k8s_resource_group_name_suffix'
 variable "container_registry_resource_group_suffix" {
-    default = "k8stest-rg"
+  default = "k8stest-rg"
 }
 
 variable "log_analytics_workspace_name" {
-    default = "testLogAnalyticsWorkspaceName"
+  default = "testLogAnalyticsWorkspaceName"
 }
 
 # refer https://azure.microsoft.com/global-infrastructure/services/?products=monitor for log analytics available regions
 variable "log_analytics_workspace_location" {
-    default = "westeurope"
+  default = "westeurope"
 }
 
 # refer https://azure.microsoft.com/pricing/details/monitor/ for log analytics pricing 
 variable "log_analytics_workspace_sku" {
-    default = "PerGB2018"
+  default = "PerGB2018"
 }
 
-variable cluster_name {
-    default = "k8stest"
+variable "cluster_name" {
+  default = "k8stest"
 }
 
-variable resource_group_name {
-    default = "azure-k8stest"
+variable "resource_group_name" {
+  default = "azure-k8stest"
 }

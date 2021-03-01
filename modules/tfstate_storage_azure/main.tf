@@ -7,8 +7,8 @@ terraform {
   }
 }
 
-  provider "azurerm" {
-      features {}
+provider "azurerm" {
+  features {}
 }
 
 # NOTE: Needed when storage account uniqueness wants to be automatically achieved
@@ -21,44 +21,44 @@ terraform {
 # }
 
 resource "azurerm_resource_group" "tfstate_rg" {
-    name     = "${lower(var.project_name)}-${var.tfstate_resource_group_name_suffix}"
-    location = var.location
-    lifecycle {
-        prevent_destroy = true
-    }
-    tags = {
-        environment = var.environment
-    }
+  name     = "${lower(var.project_name)}-${var.tfstate_resource_group_name_suffix}"
+  location = var.location
+  lifecycle {
+    prevent_destroy = true
+  }
+  tags = {
+    environment = var.environment
+  }
 }
 
 resource "azurerm_storage_account" "tfstate_sa" {
-    depends_on = [azurerm_resource_group.tfstate_rg]
+  depends_on = [azurerm_resource_group.tfstate_rg]
 
-    # 'name' must be unique across the entire Azure service, not just within the resource group.
-    # 'name' can only consist of lowercase letters and numbers, and must be between 3 and 24 characters long
-    # NOTE: Uncomment the next line to generate suffix for storage account.
-    # name                     = "${lower(var.project_name)}tfstatesa${random_id.storage_account_name_suffix.result}"
-    name                     = "${lower(var.project_name)}${var.tfstate_storage_account_name_suffix}"
-    resource_group_name      = azurerm_resource_group.tfstate_rg.name
-    location                 = var.location
-    account_tier             = "Standard"
-    account_replication_type = "LRS"
-  
-    lifecycle {
-        prevent_destroy = true
-    }
-    tags = {
-        environment = var.environment
-    }
+  # 'name' must be unique across the entire Azure service, not just within the resource group.
+  # 'name' can only consist of lowercase letters and numbers, and must be between 3 and 24 characters long
+  # NOTE: Uncomment the next line to generate suffix for storage account.
+  # name                     = "${lower(var.project_name)}tfstatesa${random_id.storage_account_name_suffix.result}"
+  name                     = "${lower(var.project_name)}${var.tfstate_storage_account_name_suffix}"
+  resource_group_name      = azurerm_resource_group.tfstate_rg.name
+  location                 = var.location
+  account_tier             = "Standard"
+  account_replication_type = "LRS"
+
+  lifecycle {
+    prevent_destroy = true
+  }
+  tags = {
+    environment = var.environment
+  }
 }
 
 resource "azurerm_storage_container" "tfstate_container" {
-    depends_on            = [azurerm_storage_account.tfstate_sa]
-    name                  = var.tfstate_container_name
-    storage_account_name  = azurerm_storage_account.tfstate_sa.name
-    container_access_type = "private"
+  depends_on            = [azurerm_storage_account.tfstate_sa]
+  name                  = var.tfstate_container_name
+  storage_account_name  = azurerm_storage_account.tfstate_sa.name
+  container_access_type = "private"
 
-    lifecycle {
-      prevent_destroy = true
-    }
+  lifecycle {
+    prevent_destroy = true
+  }
 }

@@ -1,17 +1,17 @@
 variable "environment" {
-    default = "development"
+  default = "development"
 }
 
 variable "location" {
-    default = "West Europe"
+  default = "West Europe"
 }
 
 variable "project_name" {
-    default = "kuksatrng"
+  default = "kuksatrng"
 }
 
 variable "k8s_agent_count" {
-    default = 3
+  default = 3
 }
 
 # variable "k8s_ssh_public_key" {
@@ -19,27 +19,27 @@ variable "k8s_agent_count" {
 # }
 
 variable "k8s_dns_prefix" {
-    default = "k8stest"
+  default = "k8stest"
 }
 
 variable "k8s_resource_group_name_suffix" {
-    default = "k8stest-rg"
+  default = "k8stest-rg"
 }
 
 variable "k8s_cluster_name_suffix" {
-    default = "k8stest-cluster"
+  default = "k8stest-cluster"
 }
 
 variable "log_analytics_workspace_name" {
-    default = "testLogAnalyticsWorkspaceName"
+  default = "testLogAnalyticsWorkspaceName"
 }
 
 # refer https://azure.microsoft.com/global-infrastructure/services/?products=monitor for log analytics available regions
 variable "log_analytics_workspace_location" {
-    default = "westeurope"
+  default = "westeurope"
 }
 
 # refer https://azure.microsoft.com/pricing/details/monitor/ for log analytics pricing 
 variable "log_analytics_workspace_sku" {
-    default = "PerGB2018"
+  default = "PerGB2018"
 }

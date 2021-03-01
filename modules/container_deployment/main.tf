@@ -49,7 +49,7 @@ resource "kubernetes_deployment" "test" {
 }
 */
 resource "helm_release" "hono" {
-  name       = "hono"
+  name = "hono"
 
   repository = "https://eclipse.org/packages/charts"
   chart      = "hono"
@@ -59,11 +59,11 @@ resource "helm_release" "hono" {
     value = "true"
   }
   set {
-    name = "mongodb.createInstance"
+    name  = "mongodb.createInstance"
     value = "true"
   }
   set {
-    name = "grafana.service.type"
+    name  = "grafana.service.type"
     value = "LoadBalancer"
   }
 }
