@@ -55,8 +55,16 @@ resource "helm_release" "hono" {
   chart      = "hono"
 
   set {
-    name  = "jaegerBackendExample.enabled"
+    name  = "jaegerBackendExample.enabled prometheus.createInstance grafana.enabled"
     value = "true"
+  }
+  set {
+    name = "mongodb.createInstance"
+    value = "true"
+  }
+  set {
+    name = "grafana.service.type"
+    value = "LoadBalancer"
   }
 }
 
