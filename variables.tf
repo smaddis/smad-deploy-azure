@@ -52,6 +52,11 @@ variable "k8s_agent_count" {
     default = 3
 }
 
+# Specify node count for testing purposes
+variable "testing_k8s_agent_count" {
+    default = 1
+}
+
 # variable "k8s_ssh_public_key" {
 #     default = "~/.ssh/id_rsa.pub"
 # }
