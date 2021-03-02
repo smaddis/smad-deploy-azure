@@ -78,6 +78,9 @@ resource "azurerm_kubernetes_cluster" "k8s_cluster" {
       enabled                    = true
       log_analytics_workspace_id = azurerm_log_analytics_workspace.log_analytics_ws.id
     }
+    kube_dashboard {
+      enabled = false
+    }
   }
 
   network_profile {
