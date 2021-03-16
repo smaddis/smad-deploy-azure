@@ -55,7 +55,15 @@ resource "helm_release" "hono" {
   chart      = "hono"
 
   set {
-    name  = "jaegerBackendExample.enabled prometheus.createInstance grafana.enabled"
+    name  = "prometheus.createInstance"
+    value = "true"
+  }
+  set {
+    name  = "jaegerBackendExample.enabled"
+    value = "true"
+  }
+  set {
+    name  = "grafana.enabled"
     value = "true"
   }
   set {
