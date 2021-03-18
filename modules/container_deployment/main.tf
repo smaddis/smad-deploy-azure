@@ -53,6 +53,7 @@ resource "helm_release" "hono" {
 
   repository = "https://eclipse.org/packages/charts"
   chart      = "hono"
+  version    = "1.5.9"
 
   set {
     name  = "prometheus.createInstance"
