@@ -8,6 +8,117 @@ resource "kubernetes_namespace" "hono" {
     name = "hono"
   }
 }
+
+resource "helm_release" "mongodb" {
+  name = "mongodb"
+
+  repository = "https://marketplace.azurecr.io/helm/v1/repo"
+  chart      = "mongodb"
+  version    = "~> 10.7.1"
+
+  set {
+    name  = "architecture"
+    value = "standalone"
+  }
+  set {
+    name  = "useStatefulSet"
+    value = "true"
+  }
+  set_sensitive {
+    name  = "auth.rootPassword"
+    value = "root-secret"
+  }
+  set_sensitive {
+    name  = "auth.password"
+    value = "hono-secret"
+  }  
+  set_sensitive {
+    name  = "auth.database"
+    value = "honodb"
+  }  
+  set_sensitive {
+    name  = "auth.username"
+    value = "honouser"
+  }  
+  set {
+    name  = "replicaCount"
+    value = "2"
+  }  
+  set {
+    name  = "cleanup_on_fail"
+    value = "true"
+  }
+  # Uncomment these if you want the DB to be externally available. NB! Remember that this 
+  # script also has auth credentials, so use external access with caution.
+  # 
+  # set {
+  #   name  = "externalAccess.enabled"
+  #   value = "true"
+  # }
+  # set {
+  #   name  = "service.type"
+  #   value = "LoadBalancer"
+  # }
+}
+
+resource "helm_release" "hono" {
+  name = "hono"
+
+  repository = "https://eclipse.org/packages/charts"
+  chart      = "hono"
+  version    = "~> 1.5.9"
+  depends_on = [helm_release.mongodb]
+
+  set {
+    name  = "prometheus.createInstance"
+    value = "true"
+  }
+  set {
+    name  = "jaegerBackendExample.enabled"
+    value = "true"
+  }
+  set {
+    name  = "grafana.enabled"
+    value = "true"
+  }
+  set {
+    name  = "mongodb.createInstance"
+    value = "false"
+  }
+  set {
+    name  = "grafana.service.type"
+    value = "LoadBalancer"
+  }
+  set {
+    name  = "deviceRegistryExample.type"
+    value = "mongodb"
+  }
+  set {
+    name  = "deviceRegistryExample.mongoDBBasedDeviceRegistry.mongodb.host"
+    value = "mongodb"
+  }
+  set {
+    name  = "deviceRegistryExample.mongoDBBasedDeviceRegistry.mongodb.port"
+    value = "27017"
+  }
+  set_sensitive {
+    name  = "deviceRegistryExample.mongoDBBasedDeviceRegistry.mongodb.dbName"
+    value = "honodb"
+  }
+  set_sensitive {
+    name  = "deviceRegistryExample.mongoDBBasedDeviceRegistry.mongodb.username"
+    value = "honouser"
+  }
+  set_sensitive {
+    name  = "deviceRegistryExample.mongoDBBasedDeviceRegistry.mongodb.password"
+    value = "hono-secret"
+  }
+  set {
+    name  = "cleanup_on_fail"
+    value = "true"
+  }
+}
+
 /*
 resource "kubernetes_deployment" "test" {
   metadata {
@@ -48,32 +159,3 @@ resource "kubernetes_deployment" "test" {
   }
 }
 */
-resource "helm_release" "hono" {
-  name = "hono"
-
-  repository = "https://eclipse.org/packages/charts"
-  chart      = "hono"
-  version    = "1.5.9"
-
-  set {
-    name  = "prometheus.createInstance"
-    value = "true"
-  }
-  set {
-    name  = "jaegerBackendExample.enabled"
-    value = "true"
-  }
-  set {
-    name  = "grafana.enabled"
-    value = "true"
-  }
-  set {
-    name  = "mongodb.createInstance"
-    value = "true"
-  }
-  set {
-    name  = "grafana.service.type"
-    value = "LoadBalancer"
-  }
-}
-
