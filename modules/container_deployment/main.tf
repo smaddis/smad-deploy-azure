@@ -54,3 +54,27 @@ resource "helm_release" "hono" {
     value = "hono-secret"
   }
 }
+
+resource "helm_release" "ingress-nginx" {
+  name       = "ingress-nginx"
+
+  repository = "https://kubernetes.github.io/ingress-nginx"
+  chart      = "ingress-nginx"
+}
+
+resource "helm_release" "jaeger-operator" {
+  name       = "jaeger-operator"
+
+  repository = "https://jaegertracing.github.io/helm-charts"
+  chart      = "jaeger-operator"
+
+  set {
+    name = "jaeger.create"
+    value = "true"
+  }
+
+  set {
+    name = "metadata.name"
+    value = "simple"
+  }
+}
