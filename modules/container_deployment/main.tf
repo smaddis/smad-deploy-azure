@@ -3,27 +3,20 @@
 #https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/guides/getting-started
 #https://www.hashicorp.com/blog/kubernetes-cluster-with-aks-and-terraform
 
-resource "kubernetes_namespace" "hono" {
-  metadata {
-    name = "hono"
-  }
-}
 
+
+# https://github.com/bitnami/azure-marketplace-charts/tree/master/bitnami/mongodb
 resource "helm_release" "mongodb" {
-  name = "mongodb"
+  name = "mongodb" 
 
   repository = "https://marketplace.azurecr.io/helm/v1/repo"
   chart      = "mongodb"
   version    = "~> 10.7.1"
+  cleanup_on_fail = "true"
+  values = [
+    file("${path.module}/mongo_values.yaml")
+  ]
 
-  set {
-    name  = "architecture"
-    value = "standalone"
-  }
-  set {
-    name  = "useStatefulSet"
-    value = "true"
-  }
   set_sensitive {
     name  = "auth.rootPassword"
     value = "root-secret"
@@ -33,34 +26,13 @@ resource "helm_release" "mongodb" {
     value = "hono-secret"
   }  
   set_sensitive {
-    name  = "auth.database"
-    value = "honodb"
-  }  
-  set_sensitive {
     name  = "auth.username"
     value = "honouser"
   }  
-  set {
-    name  = "replicaCount"
-    value = "2"
-  }  
-  set {
-    name  = "cleanup_on_fail"
-    value = "true"
-  }
-  # Uncomment these if you want the DB to be externally available. NB! Remember that this 
-  # script also has auth credentials, so use external access with caution.
-  # 
-  # set {
-  #   name  = "externalAccess.enabled"
-  #   value = "true"
-  # }
-  # set {
-  #   name  = "service.type"
-  #   value = "LoadBalancer"
-  # }
+
 }
 
+# https://github.com/eclipse/packages/tree/master/charts/hono
 resource "helm_release" "hono" {
   name = "hono"
 
@@ -118,44 +90,3 @@ resource "helm_release" "hono" {
     value = "true"
   }
 }
-
-/*
-resource "kubernetes_deployment" "test" {
-  metadata {
-    name = "test"
-    namespace= kubernetes_namespace.test.metadata.0.name
-  }
-  spec {
-    replicas = 2
-    selector {
-      match_labels = {
-        app = "test"
-      }
-    }
-    template {
-      metadata {
-        labels = {
-          app  = "test"
-        }
-      }
-      spec {
-        container {
-          image = "nginx:1.19.4"
-          name  = "nginx"
-
-          resources {
-            limits = {
-              memory = "512M"
-              cpu = "1"
-            }
-            requests = {
-              memory = "256M"
-              cpu = "50m"
-            }
-          }
-        }
-      }
-    }
-  }
-}
-*/

@@ -99,9 +99,30 @@ resource "kubernetes_storage_class" "azure-disk-retain" {
   }
   storage_provisioner = "kubernetes.io/azure-disk"
   reclaim_policy      = "Retain"
-  volume_binding_mode = "WaitForFirstConsumer"
+  volume_binding_mode = "Immediate"
   parameters = {
     kind        = "managed"
     cachingMode = "ReadOnly"
+  }
+}
+
+resource "kubernetes_persistent_volume_claim" "example" {
+  metadata {
+    name = "mongodb-data"
+  }
+  spec {
+    access_modes = ["ReadWriteOnce"]
+    resources {
+      requests = {
+        storage = "8Gi"
+      }
+    }
+    storage_class_name = "azure-disk-retain"
+  }
+}
+
+resource "kubernetes_namespace" "hono" {
+  metadata {
+    name = "hono"
   }
 }
