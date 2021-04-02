@@ -5,8 +5,6 @@ name: 'Terraform Validate and plan'
 
 on:
   push:
-    branches:
-    - master
   pull_request_target:
     types: [labeled]
 
