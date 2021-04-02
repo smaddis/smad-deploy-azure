@@ -4,7 +4,6 @@
 name: 'Terraform Validate and plan'
 
 on:
-  push:
   pull_request_target:
     types: [labeled]
 
@@ -32,6 +31,8 @@ jobs:
     # Checkout the repository to the GitHub Actions runner
     - name: Checkout
       uses: actions/checkout@v2
+      with:
+          ref: ${{ github.event.pull_request.head.sha }}
 
     # Install the latest version of Terraform CLI. Enable wrapper for output
     - name: Setup Terraform
