@@ -1,0 +1,18 @@
+prometheus:
+  createInstance: true
+jaegerBackendExample:
+  enabled: true
+grafana:
+  enabled: true
+mongodb:
+  createInstance: false
+grafana:
+  service:
+    type: "LoadBalancer"
+deviceRegistryExample:
+  type: "mongodb"
+  mongoDBBasedDeviceRegistry:
+    mongodb:
+      host: "mongodb"
+      port: 27017
+      dbName: "honodb"

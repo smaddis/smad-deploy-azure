@@ -7,11 +7,11 @@
 
 # https://github.com/bitnami/azure-marketplace-charts/tree/master/bitnami/mongodb
 resource "helm_release" "mongodb" {
-  name = "mongodb" 
+  name = "mongodb"
 
-  repository = "https://marketplace.azurecr.io/helm/v1/repo"
-  chart      = "mongodb"
-  version    = "~> 10.7.1"
+  repository      = "https://marketplace.azurecr.io/helm/v1/repo"
+  chart           = "mongodb"
+  version         = "~> 10.7.1"
   cleanup_on_fail = "true"
   values = [
     file("${path.module}/mongo_values.yaml")
@@ -24,11 +24,11 @@ resource "helm_release" "mongodb" {
   set_sensitive {
     name  = "auth.password"
     value = "hono-secret"
-  }  
+  }
   set_sensitive {
     name  = "auth.username"
     value = "honouser"
-  }  
+  }
 
 }
 
@@ -36,47 +36,15 @@ resource "helm_release" "mongodb" {
 resource "helm_release" "hono" {
   name = "hono"
 
-  repository = "https://eclipse.org/packages/charts"
-  chart      = "hono"
-  version    = "~> 1.5.9"
-  depends_on = [helm_release.mongodb]
+  repository      = "https://eclipse.org/packages/charts"
+  chart           = "hono"
+  version         = "~> 1.5.9"
+  cleanup_on_fail = "true"
+  depends_on      = [helm_release.mongodb]
+  values = [
+    file("${path.module}/hono_values.yaml")
+  ]
 
-  set {
-    name  = "prometheus.createInstance"
-    value = "true"
-  }
-  set {
-    name  = "jaegerBackendExample.enabled"
-    value = "true"
-  }
-  set {
-    name  = "grafana.enabled"
-    value = "true"
-  }
-  set {
-    name  = "mongodb.createInstance"
-    value = "false"
-  }
-  set {
-    name  = "grafana.service.type"
-    value = "LoadBalancer"
-  }
-  set {
-    name  = "deviceRegistryExample.type"
-    value = "mongodb"
-  }
-  set {
-    name  = "deviceRegistryExample.mongoDBBasedDeviceRegistry.mongodb.host"
-    value = "mongodb"
-  }
-  set {
-    name  = "deviceRegistryExample.mongoDBBasedDeviceRegistry.mongodb.port"
-    value = "27017"
-  }
-  set_sensitive {
-    name  = "deviceRegistryExample.mongoDBBasedDeviceRegistry.mongodb.dbName"
-    value = "honodb"
-  }
   set_sensitive {
     name  = "deviceRegistryExample.mongoDBBasedDeviceRegistry.mongodb.username"
     value = "honouser"
@@ -84,9 +52,5 @@ resource "helm_release" "hono" {
   set_sensitive {
     name  = "deviceRegistryExample.mongoDBBasedDeviceRegistry.mongodb.password"
     value = "hono-secret"
-  }
-  set {
-    name  = "cleanup_on_fail"
-    value = "true"
   }
 }
