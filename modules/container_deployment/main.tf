@@ -53,28 +53,32 @@ resource "helm_release" "hono" {
     name  = "deviceRegistryExample.mongoDBBasedDeviceRegistry.mongodb.password"
     value = "hono-secret"
   }
+  set {
+    name  = "jaegerAgentConf.REPORTER_GRPC_HOST_PORT"
+    value = "jaeger-operator-jaeger-collector:14250"
+  }
 }
 
 resource "helm_release" "ingress-nginx" {
-  name       = "ingress-nginx"
+  name = "ingress-nginx"
 
   repository = "https://kubernetes.github.io/ingress-nginx"
   chart      = "ingress-nginx"
 }
 
 resource "helm_release" "jaeger-operator" {
-  name       = "jaeger-operator"
+  name = "jaeger-operator"
 
   repository = "https://jaegertracing.github.io/helm-charts"
   chart      = "jaeger-operator"
 
   set {
-    name = "jaeger.create"
+    name  = "jaeger.create"
     value = "true"
   }
 
   set {
-    name = "metadata.name"
+    name  = "metadata.name"
     value = "simple"
   }
 }

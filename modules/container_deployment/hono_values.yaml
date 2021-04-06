@@ -1,7 +1,7 @@
 prometheus:
   createInstance: true
 jaegerBackendExample:
-  enabled: true
+  enabled: false
 grafana:
   enabled: true
 mongodb:
