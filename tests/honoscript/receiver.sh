@@ -1,6 +1,6 @@
 #!/bin/bash
 
-info=./my_stuff.json
+info=./config.json
 
 test -f $info || exit 1
 

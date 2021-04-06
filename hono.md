@@ -14,7 +14,7 @@ Create tenant, add device, add credentials, start receiver, publish telemetry:
 4. add a device to tenant: `curl -i -X POST http://$REGISTRY_IP:28080/v1/devices/$MY_TENANT`  
    run: `export MY_DEVICE=<randomed value displayed in shell>`
 
-5. set a password (replace MY_PWD with your password):
+5. set a password (replace my-pwd with your password):
    `export MY_PWD=my-pwd`    
    then run: <code>curl -i -X PUT -H "content-type: application/json" --data-binary '[{
   "type": "hashed-password",

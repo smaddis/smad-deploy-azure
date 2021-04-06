@@ -34,4 +34,4 @@ override.tf.json
 # End of https://www.toptal.com/developers/gitignore/api/terraform
 
 *kubeconfig
-my_stuff.json
+config.json

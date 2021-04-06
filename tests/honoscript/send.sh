@@ -1,5 +1,11 @@
 #!/bin/bash
 
+function usage() {
+
+    echo Usage: ./send.sh [PROTOCOL http/mqtt] [MESSAGE event/telemetry] >&2
+    exit 13
+}
+
 function http_message() {
     local MESSAGE_TYPE="$1"
     local CONTENT="$2"
@@ -23,9 +29,9 @@ function mqtt_message() {
     echo "MQTT ${MESSAGE_TYPE} message sent"
 }
 
-info=./my_stuff.json
+info=./config.json
 
-test -f $info || exit 1
+test -f $info || (echo "missing config.json" && exit 1)
 
 # Assign variables with values in json
 MY_DEVICE=$(jq -r .MY_DEVICE < $info)
@@ -37,12 +43,16 @@ MQTT_ADAPTER_IP=$(jq -r .MQTT_ADAPTER_IP <$info)
 if [[ "$#" = 2 ]]; then
     # Determine content type per message type given as argument
     case $2 in
-        event ) CONTENT='{"alarm": "fire"}';;
-        telemetry ) CONTENT='{"temp": 5}';;
+        event ) CONTENT='{"alarm":"fire"}';;
+        telemetry ) CONTENT='{"temp":5}';;
+        * ) usage;;
     esac
     # Execute given argument with CONTENT and MESSAGE TYPE parameters
     case $1 in
-        http ) http_message "$2" CONTENT ;;
-        mqtt ) mqtt_message "$2" CONTENT ;;
+        http ) http_message "$2" $CONTENT ;;
+        mqtt ) mqtt_message "$2" $CONTENT ;;
+        * ) usage;;
     esac
+else 
+    usage
 fi
