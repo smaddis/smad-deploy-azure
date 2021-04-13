@@ -1,14 +1,13 @@
 prometheus:
-  createInstance: true
+  createInstance: false
 jaegerBackendExample:
   enabled: false
+jaegerAgentConf:
+  REPORTER_GRPC_HOST_PORT: "jaeger-operator-jaeger-collector:14250"
 grafana:
-  enabled: true
+  enabled: false
 mongodb:
   createInstance: false
-grafana:
-  service:
-    type: "LoadBalancer"
 deviceRegistryExample:
   type: "mongodb"
   mongoDBBasedDeviceRegistry:

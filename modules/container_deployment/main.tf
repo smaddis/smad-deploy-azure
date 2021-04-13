@@ -40,7 +40,7 @@ resource "helm_release" "hono" {
   chart           = "hono"
   version         = "~> 1.5.9"
   cleanup_on_fail = "true"
-  depends_on      = [helm_release.mongodb]
+  depends_on      = [helm_release.kube-prometheus-stack]
   values = [
     file("${path.module}/hono_values.yaml")
   ]
@@ -52,10 +52,6 @@ resource "helm_release" "hono" {
   set_sensitive {
     name  = "deviceRegistryExample.mongoDBBasedDeviceRegistry.mongodb.password"
     value = "hono-secret"
-  }
-  set {
-    name  = "jaegerAgentConf.REPORTER_GRPC_HOST_PORT"
-    value = "jaeger-operator-jaeger-collector:14250"
   }
 }
 
@@ -71,14 +67,40 @@ resource "helm_release" "jaeger-operator" {
 
   repository = "https://jaegertracing.github.io/helm-charts"
   chart      = "jaeger-operator"
+  values = [
+    file("${path.module}/jaeger_values.yaml")
+  ]
+}
 
-  set {
-    name  = "jaeger.create"
-    value = "true"
+# Import Hono dashboards to Grafana. Basically copied from Hono Helm charts.
+# How to import dashboards: https://github.com/grafana/helm-charts/tree/main/charts/grafana#import-dashboards
+# This resource uses sidecar method: https://github.com/grafana/helm-charts/tree/main/charts/grafana#sidecar-for-dashboards.
+resource "kubernetes_config_map" "grafana_hono_dashboards" {
+  metadata {
+    name = "grafana-hono-dashboards"
+    labels = {
+      "grafana_dashboard" : "1" # Add labels so that Grafana finds these
+    }
   }
 
-  set {
-    name  = "metadata.name"
-    value = "simple"
+  data = {
+    "jvm-details.json"     = file("${path.module}/Grafana_Dashboards/JVM_details_grafana_ds.json")
+    "message-details.json" = file("${path.module}/Grafana_Dashboards/Message_details_grafana_ds.json")
+    "overview.json"        = file("${path.module}/Grafana_Dashboards/Overview_grafana_ds.json")
   }
+}
+
+# https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack
+# Values that can be set: `$ helm show values prometheus-community/kube-prometheus-stack` (repo has to be added first)
+resource "helm_release" "kube-prometheus-stack" {
+  name = "prometheus"
+
+  repository      = "https://prometheus-community.github.io/helm-charts"
+  chart           = "kube-prometheus-stack"
+  version         = "~> 14.5.0"
+  depends_on      = [helm_release.mongodb, kubernetes_config_map.grafana_hono_dashboards]
+  cleanup_on_fail = "true"
+  values = [
+    file("${path.module}/prom_values.yaml")
+  ]
 }

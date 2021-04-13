@@ -1,0 +1,4 @@
+jaeger:
+  create: true
+metadata:
+  name: "simple"
