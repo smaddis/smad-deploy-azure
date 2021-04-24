@@ -1,11 +1,11 @@
-#Practice based on: 
-#https://github.com/hashicorp/terraform-provider-kubernetes/blob/master/_examples/aks/main.tf
-#https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/guides/getting-started
-#https://www.hashicorp.com/blog/kubernetes-cluster-with-aks-and-terraform
+# Information used: 
+# https://github.com/hashicorp/terraform-provider-kubernetes/blob/0f97829b9df26a5d8f6719f750b6da71baa5454d/_examples/aks/main.tf
+# https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/guides/getting-started
+# https://www.hashicorp.com/blog/kubernetes-cluster-with-aks-and-terraform
 
 
 
-# https://github.com/bitnami/azure-marketplace-charts/tree/master/bitnami/mongodb
+# https://github.com/bitnami/azure-marketplace-charts/tree/a2342181bacffa6d27d265db187dcc938af1c3f0/bitnami/mongodb
 resource "helm_release" "mongodb" {
   name = "mongodb"
 
@@ -32,7 +32,7 @@ resource "helm_release" "mongodb" {
 
 }
 
-# https://github.com/eclipse/packages/tree/master/charts/hono
+# https://github.com/eclipse/packages/tree/83abeda25c0efd9446713aaa828ff4177ce4b27b/charts/hono
 resource "helm_release" "hono" {
   name = "hono"
 
@@ -55,26 +55,29 @@ resource "helm_release" "hono" {
   }
 }
 
+# https://github.com/kubernetes/ingress-nginx/tree/f5cfd5730c4b296c87fbc531c83a6e4f33483b75/charts/ingress-nginx
 resource "helm_release" "ingress-nginx" {
   name = "ingress-nginx"
 
   repository = "https://kubernetes.github.io/ingress-nginx"
   chart      = "ingress-nginx"
+  version    = "~> 3.29.0"
 }
-
+# https://github.com/jaegertracing/helm-charts/tree/72db111cf61e9d85f75b74a8398f2c98da0bc9d3/charts/jaeger-operator
 resource "helm_release" "jaeger-operator" {
   name = "jaeger-operator"
 
   repository = "https://jaegertracing.github.io/helm-charts"
   chart      = "jaeger-operator"
+  version    = "~> 2.19.1"
   values = [
     file("${path.module}/jaeger_values.yaml")
   ]
 }
 
 # Import Hono dashboards to Grafana. Basically copied from Hono Helm charts.
-# How to import dashboards: https://github.com/grafana/helm-charts/tree/main/charts/grafana#import-dashboards
-# This resource uses sidecar method: https://github.com/grafana/helm-charts/tree/main/charts/grafana#sidecar-for-dashboards.
+# How to import dashboards: https://github.com/grafana/helm-charts/tree/3327b6c7e9417f345774fd5a5eb46dd639ebeeec/charts/grafana#import-dashboards
+# This resource uses sidecar method: https://github.com/grafana/helm-charts/tree/3327b6c7e9417f345774fd5a5eb46dd639ebeeec/charts/grafana#sidecar-for-dashboards
 resource "kubernetes_config_map" "grafana_hono_dashboards" {
   metadata {
     name = "grafana-hono-dashboards"
@@ -90,7 +93,7 @@ resource "kubernetes_config_map" "grafana_hono_dashboards" {
   }
 }
 
-# https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack
+# https://github.com/prometheus-community/helm-charts/tree/3ca6ba66032a1efce0500f9ad6f83351ad0604b8/charts/kube-prometheus-stack
 # Values that can be set: `$ helm show values prometheus-community/kube-prometheus-stack` (repo has to be added first)
 resource "helm_release" "kube-prometheus-stack" {
   name = "prometheus"
