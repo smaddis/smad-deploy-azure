@@ -100,3 +100,17 @@ variable "cluster_name" {
 variable "resource_group_name" {
   default = "azure-k8stest"
 }
+
+###################################
+## Container deployment variables##
+###################################
+
+variable "mongodb_username" {
+  default = "honouser"
+  type    = string
+}
+
+variable "mongodb_password" {
+  default = "hono-secret"
+  type    = string
+}

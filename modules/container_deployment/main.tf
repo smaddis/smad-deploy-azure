@@ -19,15 +19,15 @@ resource "helm_release" "mongodb" {
 
   set_sensitive {
     name  = "auth.rootPassword"
-    value = "root-secret"
+    value = var.mongodb_rootPassword
   }
   set_sensitive {
     name  = "auth.password"
-    value = "hono-secret"
+    value = var.mongodb_password
   }
   set_sensitive {
     name  = "auth.username"
-    value = "honouser"
+    value = var.mongodb_username
   }
 
 }
@@ -47,11 +47,11 @@ resource "helm_release" "hono" {
 
   set_sensitive {
     name  = "deviceRegistryExample.mongoDBBasedDeviceRegistry.mongodb.username"
-    value = "honouser"
+    value = var.mongodb_username
   }
   set_sensitive {
     name  = "deviceRegistryExample.mongoDBBasedDeviceRegistry.mongodb.password"
-    value = "hono-secret"
+    value = var.mongodb_password
   }
 }
 

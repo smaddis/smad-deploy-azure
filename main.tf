@@ -28,9 +28,11 @@ module "container_registry_for_k8s" {
 }
 
 module "container_deployment" {
-  providers  = { kubernetes = kubernetes, helm = helm }
-  depends_on = [module.k8s_cluster_azure]
-  source     = "./modules/container_deployment"
+  providers        = { kubernetes = kubernetes, helm = helm }
+  depends_on       = [module.k8s_cluster_azure]
+  source           = "./modules/container_deployment"
+  mongodb_username = var.mongodb_username
+  mongodb_password = var.mongodb_password
 
   #depends_on here or no need? 
   cluster_name = tostring(module.k8s_cluster_azure.k8s_cluster_name)
