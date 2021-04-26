@@ -114,3 +114,9 @@ variable "mongodb_password" {
   default = "hono-secret"
   type    = string
 }
+
+variable "use_separate_storage_rg" {
+  default     = false
+  type        = bool
+  description = "If true, use a separate resource group for storage needs. The resource group must be created via the separate module beforehand."
+}

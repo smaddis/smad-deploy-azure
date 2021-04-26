@@ -43,3 +43,9 @@ variable "log_analytics_workspace_location" {
 variable "log_analytics_workspace_sku" {
   default = "PerGB2018"
 }
+
+variable "use_separate_storage_rg" {
+  default     = false
+  type        = bool
+  description = "If true, create PVCs created via 'Azure-disk-retain' Storage Class in a separate resource group"
+}

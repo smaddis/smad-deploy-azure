@@ -17,15 +17,16 @@ module "k8s_cluster_azure" {
   k8s_agent_count                = local.k8s_agent_count
   k8s_resource_group_name_suffix = var.k8s_resource_group_name_suffix
   project_name                   = local.project_name
+  use_separate_storage_rg        = var.use_separate_storage_rg
 }
 
-module "container_registry_for_k8s" {
-  source                                   = "./modules/container_registry"
-  container_registry_resource_group_suffix = var.container_registry_resource_group_suffix
-  project_name                             = local.project_name
-  k8s_cluster_node_resource_group          = module.k8s_cluster_azure.k8s_cluster_node_resource_group
-  k8s_cluster_kubelet_managed_identity_id  = module.k8s_cluster_azure.kubelet_object_id
-}
+#module "container_registry_for_k8s" {
+#  source                                   = "./modules/container_registry"
+#  container_registry_resource_group_suffix = var.container_registry_resource_group_suffix
+#  project_name                             = local.project_name
+#  k8s_cluster_node_resource_group          = module.k8s_cluster_azure.k8s_cluster_node_resource_group
+#  k8s_cluster_kubelet_managed_identity_id  = module.k8s_cluster_azure.kubelet_object_id
+#}
 
 module "container_deployment" {
   providers        = { kubernetes = kubernetes, helm = helm }
@@ -38,6 +39,9 @@ module "container_deployment" {
   cluster_name = tostring(module.k8s_cluster_azure.k8s_cluster_name)
 }
 
+module "datamodule" {
+  source = "./modules/datam"
+}
 
 terraform {
 
@@ -97,3 +101,12 @@ provider "helm" {
     cluster_ca_certificate = base64decode(module.k8s_cluster_azure.cluster_ca_certificate)
   }
 }
+
+resource "azurerm_role_assignment" "k8s-storage-role-ass" {
+  count                            = var.use_separate_storage_rg ? 1 : 0
+  scope                            = module.datamodule.storagestate_rg_id
+  role_definition_name             = "Owner" # This needs to be changed to a more restrictive role
+  principal_id                     = module.k8s_cluster_azure.mi_principal_id
+  skip_service_principal_aad_check = true
+}
+

@@ -101,9 +101,10 @@ resource "kubernetes_storage_class" "azure-disk-retain" {
   reclaim_policy      = "Retain"
   volume_binding_mode = "Immediate"
   parameters = {
-    kind        = "managed"
-    cachingMode = "ReadOnly"
-  }
+    kind          = "managed"
+    cachingMode   = "ReadOnly"
+    resourceGroup = var.use_separate_storage_rg ? "storage-resource-group" : null
+  } # implicitly create storage class in the same RG as K8S cluster if false ^^^
 }
 
 resource "kubernetes_persistent_volume_claim" "example" {
@@ -121,8 +122,8 @@ resource "kubernetes_persistent_volume_claim" "example" {
   }
 }
 
-resource "kubernetes_namespace" "hono" {
-  metadata {
-    name = "hono"
-  }
-}
+#resource "kubernetes_namespace" "hono" {
+#  metadata {
+#    name = "hono"
+#  }
+#}
