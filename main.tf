@@ -38,6 +38,9 @@ module "container_deployment" {
   cluster_name = tostring(module.k8s_cluster_azure.k8s_cluster_name)
 }
 
+module "datamodule" {
+  source = "./modules/datam"
+}
 
 terraform {
 
@@ -97,3 +100,11 @@ provider "helm" {
     cluster_ca_certificate = base64decode(module.k8s_cluster_azure.cluster_ca_certificate)
   }
 }
+
+resource "azurerm_role_assignment" "k8s-storage-role-ass" {
+  scope                            = module.datamodule.storagestate_rg_id
+  role_definition_name             = "Owner" # This needs to be changed to a more restrictive role
+  principal_id                     = module.k8s_cluster_azure.mi_principal_id
+  skip_service_principal_aad_check = true
+}
+

@@ -101,8 +101,9 @@ resource "kubernetes_storage_class" "azure-disk-retain" {
   reclaim_policy      = "Retain"
   volume_binding_mode = "Immediate"
   parameters = {
-    kind        = "managed"
-    cachingMode = "ReadOnly"
+    kind          = "managed"
+    cachingMode   = "ReadOnly"
+    resourceGroup = "storage-resource-group"
   }
 }
 
