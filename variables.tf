@@ -54,7 +54,7 @@ variable "k8s_agent_count" {
 
 # Specify node count for testing purposes
 variable "testing_k8s_agent_count" {
-  default = 1
+  default = 2
 }
 
 # variable "k8s_ssh_public_key" {
