@@ -29,7 +29,6 @@ resource "helm_release" "mongodb" {
     name  = "auth.username"
     value = var.mongodb_username
   }
-
 }
 
 # https://github.com/eclipse/packages/tree/83abeda25c0efd9446713aaa828ff4177ce4b27b/charts/hono
@@ -55,13 +54,17 @@ resource "helm_release" "hono" {
   }
 }
 
-# https://github.com/kubernetes/ingress-nginx/tree/f5cfd5730c4b296c87fbc531c83a6e4f33483b75/charts/ingress-nginx
-resource "helm_release" "ingress-nginx" {
-  name = "ingress-nginx"
+# https://github.com/datawire/ambassador-chart/tree/c540b0d9e91f7def8a7d9b99217cb62cfe3014fb
+resource "helm_release" "ambassador" {
+  name = "ambassador"
 
-  repository = "https://kubernetes.github.io/ingress-nginx"
-  chart      = "ingress-nginx"
-  version    = "~> 3.29.0"
+  repository = "https://getambassador.io"
+  chart      = "ambassador"
+  version    = "~> 6.6.0"
+  values = [
+    file("${path.module}/ambassador_values.yaml")
+  ]
+
 }
 # https://github.com/jaegertracing/helm-charts/tree/72db111cf61e9d85f75b74a8398f2c98da0bc9d3/charts/jaeger-operator
 resource "helm_release" "jaeger-operator" {
@@ -73,6 +76,20 @@ resource "helm_release" "jaeger-operator" {
   values = [
     file("${path.module}/jaeger_values.yaml")
   ]
+}
+
+# https://github.com/jetstack/cert-manager/tree/614438aed00e1060870b273f2238794ef69b60ab/deploy/charts/cert-manager
+resource "helm_release" "cert-manager" {
+  name = "cert-manager"
+
+  repository = "https://charts.jetstack.io"
+  chart      = "cert-manager"
+  version    = "~> 1.3.1"
+
+  set {
+    name  = "installCRDs"
+    value = "true"
+  }
 }
 
 # Import Hono dashboards to Grafana. Basically copied from Hono Helm charts.
