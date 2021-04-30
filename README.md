@@ -243,6 +243,35 @@ Configures persistence volumeclaim for MongoDB, and enables materis and stateful
 
 ## Kubernetes deployment module - k8s
 
+This module can be deploy independetly because of provider specifications in module.
+
 ### `main.tf`
 
 
+Creates resource group for Kubernetes cluster with project name and resource_group_name suffix specified in variables.
+
+Log analytics workspace is also created with ContainerInsights name.
+
+Kubernets cluster is created with `resource "azurerm_kubernetes_cluster" "k8s_cluster"` under previously created resource group.
+
+`resource "kubernetes_storage_class" "azure-disk-retain"`
+
+Creates storage class with reclaim policy of retain.
+
+``resource "kubernetes_persistent_volume_claim" "example"``
+
+Creates persistent volume claim for MongoDB.
+
+### `variables.tf` 
+
+Contains variables for naming all the resources and specifying node count. Project name, k8s_agent_count and resource_group_name_suffix variables can be set from root main.tf
+
+### `outputs.tf` 
+
+Output values acquired from k8s_clusters kube config. 
+THese include client keys, cerficates, usernames, passwords and hosts for k8s cluster.
+
+
+## Terraform state module - tfstate_storage_azure
+
+This module is to be ran separately, because it creates needed Terraform State files and storage space.
