@@ -127,3 +127,19 @@ resource "kubernetes_persistent_volume_claim" "example" {
 #    name = "hono"
 #  }
 #}
+
+resource "kubernetes_persistent_volume_claim" "influxdb" {
+  metadata {
+    name = "influx-pvc"
+  }
+  spec {
+    access_modes = ["ReadWriteOnce"]
+    resources {
+      requests = {
+        storage = "8Gi"
+      }
+    }
+    storage_class_name = "azure-disk-retain"
+  }
+}
+

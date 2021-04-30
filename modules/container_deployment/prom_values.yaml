@@ -26,6 +26,12 @@ prometheus:
   service:
     type: "LoadBalancer"
   prometheusSpec:
+    # https://github.com/prometheus-operator/prometheus-operator/blob/3d7e074097abed637c0a8531e285b518da48e7df/Documentation/api.md#remotereadspec
+    remoteRead:
+    - url: "http://influx-influxdb:8086/api/v1/prom/read?db=monitoring_data&u=readuser&p=password"
+    # https://github.com/prometheus-operator/prometheus-operator/blob/3d7e074097abed637c0a8531e285b518da48e7df/Documentation/api.md#remotewritespec
+    remoteWrite:
+    - url: "http://influx-influxdb:8086/api/v1/prom/write?db=monitoring_data&u=writeuser&p=password"
     additionalScrapeConfigs:
       - job_name: hono-pods
         honor_timestamps: true

@@ -37,10 +37,18 @@ module "container_deployment" {
 
   #depends_on here or no need? 
   cluster_name = tostring(module.k8s_cluster_azure.k8s_cluster_name)
+
 }
 
 module "datamodule" {
   source = "./modules/datam"
+}
+
+module "influxdb" {
+  providers  = { kubernetes = kubernetes, helm = helm }
+  depends_on = [module.k8s_cluster_azure]
+  source     = "./modules/influxdb"
+  #  count      = var.enable_influxdb_module ? 1 : 0
 }
 
 terraform {
