@@ -1,82 +1,51 @@
-Just practice based on https://docs.microsoft.com/en-us/azure/developer/terraform/create-k8s-cluster-with-tf-and-aks
+# Smad service stack deployment to Azure
 
-### Infrastucture preparation for Kuksa Cloud
+[![Terraform Validate and plan](https://github.com/smaddis/smad-deploy-azure/actions/workflows/terraform-plan.yml/badge.svg)](https://github.com/smaddis/smad-deploy-azure/actions/workflows/terraform-plan.yml)
 
-In order to deploy Kuksa Cloud, Terraform -tool is first used create 
-necessary infrastucture resources into Microsoft Azure.
+This repository consists of Terraform scripts and Bash tools for deploying service stack for the SMAD project to Azure. Main terraform script deploys
+- Eclipse Hono
+- Prometheus monitoring
+- Jaeger tracing
+- MongoDB for device registry
+- Grafana and set of dashboards
 
-#### Prerequisities
+Included testing tools allow setting up and testing deployed Hono instance.
 
+## Documentation
 
-##### Authenticate
+More in-depth setup and configuration can be found at [SETUP.md](./docs/SETUP.md)
 
-Be sure to authenticate to Azure using Azure CLI 
-before runningthese Terraform scripts.
+Architectural description of the codebase can be found at [ARCHITECTURE.md](./docs/ARCHITECTURE.md)
 
-If you are running these scripts in Azure Cloud Shell
-you are already authenticated.
+## Usage
 
-Otherwise, you can login using, for example, Azure CLI interactively:
-`$ az login`
+1. Create Terraform State storage group and account to Azure
+```bash
+$ terraform apply ./modules/tf_state_storage_azure
+```
+### No separate storage resource group (default)
 
-For other login options see Azure documentation provided by Microsoft:
-https://docs.microsoft.com/en-us/cli/azure/authenticate-azure-cli
+2. Deploy main service stack
 
+```bash
+$ terraform apply ./
+```
 
-##### Select a subscription
+### OPTIONAL: Separate resource group
 
-After you authenticate with Azure CLI, check that the selected 
-subscription is the one you want to use:
-`$ az account show --output table`
+2. Create separate resource group for databases
+```
+$ terraform apply ./modules/storage_rg
+```
 
-You can list all subscriptions you can use:
-`$ az account list --output table`
+3. Deploy with `use_separate_storage_rg=true`
+```
+$ terraform apply -var=use_separate_storage_rg=true ./
+```
 
-To change your selected subscription
-`$ az account set -s <$SUBSCRIPTION_ID_OR_NAME>`
+## License
+[MIT License](./LICENSE)
 
+## Authors
 
-#### 0.Create a storage account to store shared state for Terraform
-Shared state should always be preferred when working with Terraform.
-
-In order to create one you run `$ terraform apply './modules/tfstate_storage_azure/'` module.
-
-This creates:
-- Azure Resource Group (default name 'kuksatrng-tfstate-rg')
-- Azure Storage Account (default name 'kuksatrngtfstatesa')
-- Azure Storage Container (default name 'tfstate')
-
-You can customize naming in './modules/tfstate_storage_azure/variables.tf'.
-Check file content for naming restrictions and details.
-
-
-#### Working with Terraform Workspaces
-
-It is recommended that you familiarize yourself with Terraform Workspaces 
-concept and utilize them when using these scripts.
-(https://www.terraform.io/docs/language/state/workspaces.html)
-
-Creating e.g. new workspace named 'development' with `terraform workspace new development` 
-before creating any resources other than shared state you e.g.
-- Enable creation of multiple AKS clusters within the same state file
-- Prevent accidental deletion of other clusters within the same state file
-
-Other option is to customize state storage parameters e.g. state file name and create 
-a new AKS cluster there.
-
-With these scripts use of workspaces is encouraged.
-
-
-#### 1. Create a Kubernetes cluster in Azure Managed Kubernetes Service (AKS)
- 
-In order to create one with default parameters (see variables.tf) you run  `$ terraform apply './'`.
-You can also run `$ terraform apply './' -var-file='./example.tfvars'` to get variables from 'example.tfvars' -file.
-You can use example.tfvars to e.g. customize naming of various objects.
-
-
-#### 2. Continue Kuksa Cloud deployment with kubectl, docker and Azure CLI
-
-Changes: 
-https://github.com/hashicorp/terraform-provider-kubernetes/blob/master/_examples/aks/README.md
- 
-
+This project was created by student group called  SMADYASP, from University Of Oulu, Finland
