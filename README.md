@@ -129,16 +129,20 @@ Similarly, when running `terraform apply -target`, if resources that are needed 
  
 This is a architectural description of the smad-deploy-azure
  
-|Folder|Description||
+|Folder|Description|Depends on|
 |------|----------|-------|
 |./|Root folder||
 |./modules|Modules used by the script. |
-|../container_deployment|Handles deployment of the stack via Helm to k8s cluster. Holds all the information regarding setting up the cloud environment
-|../container_registry| Creates ACR for k8s cluster. **Currently not used**
+|../container_deployment|Handles deployment of the stack via Helm to k8s cluster. Holds all the information regarding setting up the cloud environment| k8s
+|../container_registry| Creates ACR for k8s cluster. **Currently not used**| k8s
 |../k8s|Module for  creating kubernetes cluster to Azure (AKS)
 |../tfstate_storage_azure|Creates resource group for terraform state file|
+|../datam|Gets value from remote state file located in Azure subscription.
+|../storage_rg|Creates separate resource group for persistent data needs|
 
-# Description
+Every module follows the conventional Terraform naming scheme, and therefore has `main.tf`, `variables.tf` and `outputs.tf` files.
+
+## Description
 
 ## Root folder
 
@@ -191,6 +195,8 @@ Outputs for kube config files and path's for it
 Example .tfvars for supplying custom variables.
 
 ## Container deployment module - container_deployment
+
+**Depends on `k8s module`**
 
 This module handles all the aspects of deploying smad service stack. Which consists of Hono, MongoDB, Prometheus, Jaeger and Grafana. Uses Helm for deployment.
 
@@ -252,13 +258,13 @@ Creates resource group for Kubernetes cluster with project name and resource_gro
 
 Log analytics workspace is also created with ContainerInsights name.
 
-Kubernets cluster is created with `resource "azurerm_kubernetes_cluster" "k8s_cluster"` under previously created resource group.
+Kubernetes cluster is created with `resource "azurerm_kubernetes_cluster" "k8s_cluster"` under previously created resource group.
 
-`resource "kubernetes_storage_class" "azure-disk-retain"`
+#### `resource "kubernetes_storage_class" "azure-disk-retain"`
 
 Creates storage class with reclaim policy of retain.
 
-``resource "kubernetes_persistent_volume_claim" "example"``
+#### ``resource "kubernetes_persistent_volume_claim" "example"``
 
 Creates persistent volume claim for MongoDB.
 
@@ -274,4 +280,58 @@ THese include client keys, cerficates, usernames, passwords and hosts for k8s cl
 
 ## Terraform state module - tfstate_storage_azure
 
-This module is to be ran separately, because it creates needed Terraform State files and storage space.
+### `main.tf`
+This module is to be ran separately, because it creates needed Terraform State files and storage account and container to Azure
+
+### `variables.tf`
+
+Hold variables for naming resources created by this module.
+
+### `outputs.tf`
+
+Output values four resource group, storage account and storate container.
+
+## Contrainer registry module - container_registry **NOT USED**
+
+**Depends on k8s module**
+
+### `main.tf`
+
+Creates Azure Container registry in the same resource group as k8s modules.
+
+Assigns acrpull role for k8s cluster
+### `variables.tf`
+
+Variables for naming resources.
+
+### `outputs.tf`
+
+Output values for ACR. Containing id, login url, username and password.
+
+## Datamanager module - datam
+
+This module used for getting data from remote Terraform state for creating role assingment in root folders `main.tf`
+
+### `main.tf`
+
+Data resource which uses previously created tfstate naming for getting informatio of created tfstate in Azure subscription
+
+### `variables.tf`
+
+### `outputs.tf`
+
+Outputs remote state's id.
+## Storage resource group - storage_rg
+
+This modules creates separate resource group for persistent volume claim.
+
+### `main.tf`
+
+Establish azurerm backend with previously set naming for tfstate files, and create resource group named `storage-resource-group"`
+
+### `variables.tf`
+
+
+### `outputs.tf`
+
+Output value of created resource group's id.
