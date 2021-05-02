@@ -143,6 +143,7 @@ This is a architectural description of the smad-deploy-azure
 Every module follows the conventional Terraform naming scheme, and therefore has `main.tf`, `variables.tf` and `outputs.tf` files.
 
 ## Description
+![TF script diagram view](./tfscript_diagram.png "Diagram")
 
 ## Root folder
 
