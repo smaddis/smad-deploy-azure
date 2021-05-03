@@ -4,7 +4,7 @@ This is a architectural description of the smad-deploy-azure
  
 |Folder|Description|Depends on|
 |------|----------|-------|
-|[./](#Root-module)|Root folder||
+|[./](#Root-module)|Root module||
 |./modules|Modules used by the script. |
 |[../k8s](#Kubernetes-deployment-module)|Module for  creating kubernetes cluster to Azure (AKS)
 |[../container_deployment](#Container-deployment-module)|Handles deployment of the stack via Helm to k8s cluster. Holds all the information regarding setting up the cloud environment| k8s
@@ -32,7 +32,11 @@ Project name is prefixed with Terraform Workspace name.
 
 #### `module "k8s_cluster_azure"`
  
-Uses module specified in `./modules/k8s/`  folder for deploying Kubernetes cluster under `k8test-rg resource group`. Node count of cluster is controlled  by `k8s_agent_count` variable, where node count for default terraform workspace is 3, and non-default workspace is 2.
+Uses module specified in `./modules/k8s/`  folder for deploying Kubernetes cluster under `k8test-rg resource group`. Node count of cluster is controlled  by `k8s_agent_count` variable, where node count for default terraform workspace is 3, and non-default workspace is 2. `use_separate_storage_rg` variable controls whether separate resource group for storage purposes is created
+
+##### `resource "azurerm_role_assignment" "k8s-storage-role-ass"`
+
+Role assingment for separate resource group. Gets scope value from datamodule. Created only when `use_separate_storage_rg` is true.
 
 #### `module "container_deployment"`
 
@@ -86,7 +90,7 @@ Kubernetes cluster is created with `resource "azurerm_kubernetes_cluster" "k8s_c
 
 #### `resource "kubernetes_storage_class" "azure-disk-retain"`
 
-Creates storage class with reclaim policy of retain.
+Creates storage class with reclaim policy of retain. Resource group is defined with the `separate_storage_rg` variable, and if it is false then `null` value is used. This means that when resource group is `null` then resource group is created under the same resource group where k8s_cluster is.
 
 #### ``resource "kubernetes_persistent_volume_claim" "example"``
 
@@ -156,7 +160,9 @@ Configures grafana, prometheus as LoadBalancers, and configures scrape configs f
 Configures persistence volumeclaim for MongoDB, and enables materis and statefuls set.
 
 ## Contrainer registry module
+
 **NOT USED**
+
 **Depends on k8s module**
 
 ### `main.tf`
