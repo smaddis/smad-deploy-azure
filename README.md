@@ -13,9 +13,9 @@ Included testing tools allow setting up and testing deployed Hono instance.
 
 ## Documentation
 
-More in-depth setup and configuration can be found at [SETUP.md](../docs/SETUP.md)
+More in-depth setup and configuration can be found at [SETUP.md](./docs/SETUP.md)
 
-Architectural description of the codebase can be found at [ARCHITECTURE.md](/../../docs/ARCHITECTURE.md)
+Architectural description of the codebase can be found at [ARCHITECTURE.md](./docs/ARCHITECTURE.md)
 
 ## Usage
 
