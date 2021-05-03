@@ -1,6 +1,24 @@
 grafana:
+  dashboardProviders:
+    dashboardproviders.yaml:
+      apiVersion: 1
+      providers:
+      - name: 'Hono'
+        orgId: 1
+        folder: 'Hono'
+        type: file
+        disableDeletion: true
+        editable: false
+        options:
+          path: /etc/secrets/dashboards/
   service:
     type: "LoadBalancer"
+  extraSecretMounts:
+    - name: dashboards-secret-mount
+      secretName: grafana-hono-dashboards
+      defaultMode: 0440
+      mountPath: /etc/secrets/dashboards
+      readOnly: true
 prometheusOperator:
   service:
     type: "LoadBalancer"

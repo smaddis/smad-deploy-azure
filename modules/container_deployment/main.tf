@@ -40,7 +40,7 @@ resource "helm_release" "hono" {
   chart           = "hono"
   version         = "~> 1.5.9"
   cleanup_on_fail = "true"
-  depends_on      = [helm_release.kube-prometheus-stack]
+  #depends_on      = [helm_release.mongodb]
   values = [
     file("${path.module}/hono_values.yaml")
   ]
@@ -77,8 +77,10 @@ resource "helm_release" "jaeger-operator" {
 
 # Import Hono dashboards to Grafana. Basically copied from Hono Helm charts.
 # How to import dashboards: https://github.com/grafana/helm-charts/tree/3327b6c7e9417f345774fd5a5eb46dd639ebeeec/charts/grafana#import-dashboards
-# This resource uses sidecar method: https://github.com/grafana/helm-charts/tree/3327b6c7e9417f345774fd5a5eb46dd639ebeeec/charts/grafana#sidecar-for-dashboards
-resource "kubernetes_config_map" "grafana_hono_dashboards" {
+# Sidecar method: https://github.com/grafana/helm-charts/tree/3327b6c7e9417f345774fd5a5eb46dd639ebeeec/charts/grafana#sidecar-for-dashboards
+# This resource uses dashboard provisioning: https://grafana.com/docs/grafana/latest/administration/provisioning/#dashboards
+# https://www.gitmemory.com/issue/helm/charts/16006/521211747
+resource "kubernetes_secret" "grafana_hono_dashboards" {
   metadata {
     name = "grafana-hono-dashboards"
     labels = {
@@ -101,7 +103,7 @@ resource "helm_release" "kube-prometheus-stack" {
   repository      = "https://prometheus-community.github.io/helm-charts"
   chart           = "kube-prometheus-stack"
   version         = "~> 14.5.0"
-  depends_on      = [helm_release.mongodb, kubernetes_config_map.grafana_hono_dashboards]
+  depends_on      = [kubernetes_secret.grafana_hono_dashboards]
   cleanup_on_fail = "true"
   values = [
     file("${path.module}/prom_values.yaml")

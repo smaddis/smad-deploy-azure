@@ -18,7 +18,4 @@ variable "mongodb_rootPassword" {
   default     = "root-secret"
   type        = string
   description = "Optional password for  MongoDB"
-
 }
-
-
