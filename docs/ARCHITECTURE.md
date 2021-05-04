@@ -113,8 +113,17 @@ THese include client keys, cerficates, usernames, passwords and hosts for k8s cl
 
 This module handles all the aspects of deploying smad service stack. Which consists of Hono, MongoDB, Prometheus, Jaeger and Grafana. Uses Helm for deployment.
 
-Direct URL to chart's source is provided one line above a ``helm_release`` resource where one can see how the chart can be configured.
-Included .yaml files are configured with the values acquired from these Helm charts.
+Direct URL to chart's source is provided one line above a ``helm_release`` resource. Usually that URL is where one can see how the chart can be configured.
+The chart values can be set either by giving the values in a .yaml file or by including a `set` block within the `helm_release` block.
+
+In the current script, the chart values are mostly set by giving the values via the included .yaml files.
+
+If the chart source page doesn't provide list of settable values, the values can also be shown by adding the repo and running `helm show values`:
+```bash
+$ helm repo add <choose_repo_name> <repo_url>
+$ helm repo update
+$ helm show values <chosen_repo_name>/<chart_name>
+```
 
 ### `main.tf`
 
