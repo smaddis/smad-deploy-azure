@@ -19,6 +19,7 @@ This is a architectural description of the smad-deploy-azure
 Every module follows the conventional Terraform naming scheme, and therefore has `main.tf`, `variables.tf` and `outputs.tf` files.
 
 ## Description
+
 ![TF script diagram view](./tfscript_diagram.png "Diagram")
 
 ## Root module
@@ -112,6 +113,9 @@ THese include client keys, cerficates, usernames, passwords and hosts for k8s cl
 
 This module handles all the aspects of deploying smad service stack. Which consists of Hono, MongoDB, Prometheus, Jaeger and Grafana. Uses Helm for deployment.
 
+Direct URL to chart's source is provided one line above a ``helm_release`` resource where one can see how the chart can be configured.
+Included .yaml files are configured with the values acquired from these Helm charts.
+
 ### `main.tf`
 
 #### `resource "helm_release" "mongodb"`
@@ -130,13 +134,14 @@ Used for creating ingress for Jaeger-query service
 
 Deploys jaeger-operator, and is configured with values from `jaeger_values.yaml`
 
-#### ``resource "kubernetes_config_map" "grafana_hono_dashboards"``
+#### ``resource "kubernetes_secret" "grafana_hono_dashboards"``
 
 Creates kubernetes config map and supplies preconfigured Grafana dashboards via .json
 
 #### `resource "helm_release" "kube-prometheus-stack"`
 
-Deploys kube-prometheus-stack which consists of Prometheus, kube metrics and grafana. 
+Deploys kube-prometheus-stack which consists of Prometheus, kube metrics and grafana. Gets values from `prom_values.yaml`
+
 ### `variables.tf`
 
 Holds information related to mondogb username and passwords. Can be configured independetly otherwise defaults used.
@@ -149,7 +154,7 @@ Other services provided by Hono Helm chart are disabled. Smad-deploy-azure uses 
 
 ### `jaeger_values.yaml`
 
-TBC
+Jaeger is enabled with simple metadata.
 
 ### `prom_values.yaml`
 
@@ -157,7 +162,7 @@ Configures grafana, prometheus as LoadBalancers, and configures scrape configs f
 
 ### `mongodb_values.yaml`
 
-Configures persistence volumeclaim for MongoDB, and enables materis and statefuls set.
+Configures persistence volumeclaim for MongoDB, and enables metrics and statefuls set.
 
 ## Contrainer registry module
 

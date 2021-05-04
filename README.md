@@ -1,4 +1,4 @@
-# Smad service stack deployment
+# Smad service stack deployment to Azure
 
 [![Terraform Validate and plan](https://github.com/smaddis/smad-deploy-azure/actions/workflows/terraform-plan.yml/badge.svg)](https://github.com/smaddis/smad-deploy-azure/actions/workflows/terraform-plan.yml)
 
@@ -19,9 +19,29 @@ Architectural description of the codebase can be found at [ARCHITECTURE.md](./do
 
 ## Usage
 
-1. `$ terraform apply ./modules/tf_state_storage_azure`
-2. `$ terraform apply ./modules/storage_rg`
-3. `$ terraform apply ./`
+1. Create Terraform State storage group and account to Azure
+```bash
+$ terraform apply ./modules/tf_state_storage_azure
+```
+### No separate storage resource group (default)
+
+2. Deploy main service stack
+
+```bash
+$ terraform apply ./
+```
+
+### OPTIONAL: Separate resource group
+
+2. Create separate resource group for databases
+```
+$ terraform apply ./modules/storage_rg
+```
+
+3. Deploy with `use_separate_storage_rg=true`
+```
+$ terraform apply -var=use_separate_storage_rg=true ./
+```
 
 ## License
 [MIT License](./LICENSE)
