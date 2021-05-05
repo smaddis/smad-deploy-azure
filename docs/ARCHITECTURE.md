@@ -106,6 +106,18 @@ Contains variables for naming all the resources and specifying node count. Proje
 Output values acquired from k8s_clusters kube config. 
 THese include client keys, cerficates, usernames, passwords and hosts for k8s cluster.
 
+### `ambassador_values.yaml`
+
+Creates mappings to make services accessible behind ambassador with domain:port
+Creates an Acme challenge service and a mapping for it for certification with Let's Encrypt
+In root folder for convenience in manual kubectl applying. Can be moved to modules/container_deployment/ when automation is sorted out
+
+### `tls.yaml`
+
+Creates an ingress for routing grafana and jaeger with Ambassador
+Creates a ClusterIssuer and Certificate for TLS certification with Let's Encrypt
+In root folder for convenience in manual kubectl applying. Can be moved to modules/container_deployment/ when automation is sorted out
+
 
 ## Container deployment module
 
@@ -135,9 +147,13 @@ Values used by service are supplied by `mongo_values.yaml` -file. Sensitive valu
 
 Deploys Hono from Helm Chart. Uses `hono_values.yaml` for configuration and sensitive values from MongoDB are acquired from variables.tf. Deploys only after kube-prometheus-stack has succesfully deployed.
 
-#### `resource "helm_release" "ingress-nginx"`
+#### `resource "helm_release" "ambassador"`
 
 Used for creating ingress for Jaeger-query service
+
+#### `resource "helm_release" "cert-manager"`
+
+Handles TLS certification with Let's Encrypt
 
 #### `resource "helm_release" "jaeger-operator"`
 
@@ -150,6 +166,10 @@ Creates kubernetes config map and supplies preconfigured Grafana dashboards via 
 #### `resource "helm_release" "kube-prometheus-stack"`
 
 Deploys kube-prometheus-stack which consists of Prometheus, kube metrics and grafana. Gets values from `prom_values.yaml`
+
+#### `resource "null_resource" "kubectl_apply"`
+
+Untested feature that may or may not work. Automates application of `tls.yaml` and `ambassador_mappings.yaml` if it works
 
 ### `variables.tf`
 
@@ -167,11 +187,16 @@ Jaeger is enabled with simple metadata.
 
 ### `prom_values.yaml`
 
-Configures grafana, prometheus as LoadBalancers, and configures scrape configs for Hono.
+Configures prometheus as LoadBalancers, and configures scrape configs for Hono. Applies ingress and subpath routing for ambassador
 
-### `mongodb_values.yaml`
+### `mongo_values.yaml`
 
 Configures persistence volumeclaim for MongoDB, and enables metrics and statefuls set.
+
+### `ambassador_values.yaml`
+
+Configures ports for ambassador ingress routing
+
 
 ## Contrainer registry module
 
