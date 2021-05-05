@@ -1,4 +1,8 @@
-jaeger:
-  create: true
-metadata:
-  name: "simple"
+query:
+  service:
+    type: LoadBalancer
+cassandra:
+  persistence:
+      storageClass: "azure-disk-retain"
+schema:
+  activeDeadlineSeconds: 750

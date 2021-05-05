@@ -63,13 +63,15 @@ resource "helm_release" "ingress-nginx" {
   chart      = "ingress-nginx"
   version    = "~> 3.29.0"
 }
-# https://github.com/jaegertracing/helm-charts/tree/72db111cf61e9d85f75b74a8398f2c98da0bc9d3/charts/jaeger-operator
-resource "helm_release" "jaeger-operator" {
-  name = "jaeger-operator"
-
+#https://github.com/jaegertracing/helm-charts/tree/main/charts/jaeger
+#pulls bitnami/cassandra chart
+#https://github.com/bitnami/charts/blob/master/bitnami/cassandra/
+resource "helm_release" "jaeger" {
+  name = "jaeger"
   repository = "https://jaegertracing.github.io/helm-charts"
-  chart      = "jaeger-operator"
-  version    = "~> 2.19.1"
+  chart = "jaeger"
+  version = "~> 0.45.1"
+  depends_on = [helm_release.kube-prometheus-stack]
   values = [
     file("${path.module}/jaeger_values.yaml")
   ]
