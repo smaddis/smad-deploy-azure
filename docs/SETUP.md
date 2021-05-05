@@ -103,6 +103,10 @@ and selected by running
 ```
 $ terraform workspace select <workspace_name>
 ```
+All commands can be shown with 
+```
+$ terraform workspace
+```
 
 ## Workspace-specific configurations
 
@@ -112,7 +116,16 @@ Resources are not prefixed, so only one instance of the deployment can be set up
 ### Non-default workspace:
 Resources are prefixed, so multiple instances of the deployment can be set up at a time. The cluster is assigned 2 nodes in the non-default workspace configuration.
 
+Example:
+```
+Terraform Workspace name: testdeploy
+Project name: kuksatrng
+Name for resources: testdeploy-kuksatrng
+```
+
 # Deploy the SMAD stack
+
+Ensure that you have created proper Terraform state resources to Azure with [tfstate_storage_azure module](#create-a-storage-account-to-store-shared-state-for-terraform), before continuing to this part.
 
 ## Deploy the main service stack with default parameters (see variables.tf)
 If you want to use a separate resource group for storage, skip this step.
@@ -155,7 +168,7 @@ Similarly, when running `terraform apply -target`, if resources that are needed 
 
 # Testing that Hono works
 
-`tests/honoscript` folder has a shell script that can be used to quickly verify that Hono is running properly. Refer to `tests/honoscript/README.md` for more detailed instructions.
+[`tests/honoscript`](./tests/honoscript) folder has a shell script that can be used to quickly verify that Hono is running properly. Refer to [`tests/honoscript/README.md`](./tests/honoscript/README.md) for more detailed instructions.
 
 # Known issues
 
