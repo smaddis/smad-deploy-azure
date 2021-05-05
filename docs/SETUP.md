@@ -168,7 +168,7 @@ Similarly, when running `terraform apply -target`, if resources that are needed 
 
 # Testing that Hono works
 
-[`tests/honoscript`](./tests/honoscript) folder has a shell script that can be used to quickly verify that Hono is running properly. Refer to [`tests/honoscript/README.md`](./tests/honoscript/README.md) for more detailed instructions.
+[`tests/honoscript`](../tests/honoscript) folder has a shell script that can be used to quickly verify that Hono is running properly. Refer to [`tests/honoscript/README.md`](../tests/honoscript/README.md) for more detailed instructions.
 
 # Known issues
 
