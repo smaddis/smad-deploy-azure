@@ -8,6 +8,7 @@ This is a architectural description of the smad-deploy-azure
 |./modules|Modules used by the script. |
 |[../k8s](#Kubernetes-deployment-module)|Module for  creating kubernetes cluster to Azure (AKS)
 |[../container_deployment](#Container-deployment-module)|Handles deployment of the stack via Helm to k8s cluster. Holds all the information regarding setting up the cloud environment| k8s
+|[../influxdb](#Influx-deployment-module)|Module that handles deployment of Influxdb to k8s cluster. Holds all the information to set up database for prometheus metrics | k8s
 |[../container_registry](#Contrainer-registry-module)| Creates ACR for k8s cluster. **Currently not used**| k8s
 |[../datam](#Datamanager-module)|Gets value from remote state file located in Azure subscription.
 |[../tfstate_storage_azure](#Terraform-state-module)|Creates resource group for terraform state file|
@@ -44,6 +45,10 @@ Role assingment for separate resource group. Gets scope value from datamodule. C
 Uses module specified in `./modules/container_deployment/`  folder for deploying services on previously created Kubernetes cluster. Custom MongoDB username and password could be supplied to services, otherwise default is used.
 
 Kubernetes and Helm providers are configured with outputs acquired from created k8s cluster module.
+
+#### `module "influxdb"`
+
+Adds bitnami helm charts that bootstrap a Influxdb deployment on the k8s cluster using the Helm package manager.
 
 ### `variables.tf`
 
@@ -96,6 +101,10 @@ Creates storage class with reclaim policy of retain. Resource group is defined w
 #### ``resource "kubernetes_persistent_volume_claim" "example"``
 
 Creates persistent volume claim for MongoDB.
+
+#### ``resource "kubernetes_persistent_volume_claim" "influxdb"``
+
+Creates persistent volume claim for InfluxDB.
 
 ### `variables.tf` 
 
@@ -216,6 +225,25 @@ Variables for naming resources.
 ### `outputs.tf`
 
 Output values for ACR. Containing id, login url, username and password.
+
+
+## Influxdb module
+
+**Depends on k8s module**
+
+This module deploys influxdb as a long term storage for prometheus monitoring data.
+
+### `main.tf`
+
+Adds bitnami helm charts that bootstraps a Influxdb deployment on a Kubernetes cluster using the Helm package manager and creates a database monitoring_data for monitoring data.
+
+### `values.yaml`
+
+Values used for deploying Influx.
+
+### `influx-secrets.yaml`
+
+Stores admin, user, writeUser and readUser passwords for authentication.
 
 ## Datamanager module
 
