@@ -31,23 +31,45 @@ spec:
   service: hono-service-device-registry-ext:15671
 ---
 apiVersion: getambassador.io/v2
-kind:  TCPMapping
+kind:  Mapping
 metadata:
   name: prometheus-grafana
 spec:
-  port: 3000
+  #port: 80
   prefix: /grafana/
-  host: smaddis.westeurope.cloudapp.azure.com
-  service: prometheus-grafana:3000
+  host: ${domain}
+  service: prometheus-grafana:80
 ---
 apiVersion: getambassador.io/v2
 kind:  TCPMapping
 metadata:
+  name: prometheus-grafana-tcp
+spec:
+  port: 3000
+  prefix: /grafana/
+  host: ${domain}
+  service: prometheus-grafana:3000
+---
+apiVersion: getambassador.io/v2
+kind:  Mapping
+metadata:
   name: jaeger-operator-jaeger-query
+spec:
+  #port: 80
+  prefix: /jaeger/
+  rewrite: /jaeger/
+  #host_redirect: true
+  host: ${domain}
+  service: jaeger-operator-jaeger-query:16686
+---
+apiVersion: getambassador.io/v2
+kind:  TCPMapping
+metadata:
+  name: jaeger-operator-jaeger-query-tcp
 spec:
   port: 16686
   prefix: /jaeger/
-  host: smaddis.westeurope.cloudapp.azure.com
+  host: ${domain}
   service: jaeger-operator-jaeger-query:16686
 ---
 apiVersion: getambassador.io/v2
@@ -58,6 +80,15 @@ spec:
   prefix: /.well-known/acme-challenge/
   rewrite: ""
   service: acme-challenge-service
+---
+apiVersion: getambassador.io/v2
+kind: TLSContext
+metadata:
+  name: ambassador-tls-terminator
+spec:
+  hosts:
+  - ${domain}
+  secret: ambassador-certs
 ---
 apiVersion: v1
 kind: Service

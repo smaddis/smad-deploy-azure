@@ -1,15 +1,12 @@
 grafana:
   service:
-    type: "ClusterIP"
+    type: "LoadBalancer"
   ingress:
-    enabled: true
-    ingressClassName: nginx
-    hosts:
-      - smaddis.westeurope.cloudapp.azure.com
+    enabled: false
+    ingressClassName: ambassador
     path: /grafana/
   grafana.ini: 
    server:
-      domain: smaddis.westeurope.cloudapp.azure.com
       root_url: "%(protocol)s://%(domain)s:%(http_port)s/grafana/"
       serve_from_sub_path: true
       http_port: 3000
@@ -58,7 +55,7 @@ prometheus:
             - default
           selectors:
           - role: pod
-            label: app.kubernetes.io/instance=hono,helm.sh/chart=hono-1.5.10
+            label: app.kubernetes.io/instance=hono,helm.sh/chart=hono-1.9.4
         tls_config:
           insecure_skip_verify: true
         # https://github.com/eclipse/packages/blob/9f514b9dfd6734dfb196ba8c6b1151a431bbfd7b/charts/hono/templates/_helpers.tpl#L123-L130

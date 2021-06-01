@@ -1,4 +1,12 @@
 jaeger:
-  create: true
-metadata:
-  name: "simple"
+ create: true
+ spec:
+    strategy: production
+    query:
+      serviceType: LoadBalancer
+      options:
+        log-level: debug
+        query:
+          base-path: /jaeger
+    ingress:
+      enabled: false

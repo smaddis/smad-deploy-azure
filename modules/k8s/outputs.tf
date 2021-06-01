@@ -35,8 +35,16 @@ output "k8s_cluster_name" {
   value = azurerm_kubernetes_cluster.k8s_cluster.name
 }
 
+output "k8s_cluster_rg_name" {
+  value = azurerm_resource_group.k8s_rg.name
+}
+
 output "k8s_cluster_node_resource_group" {
   value = azurerm_kubernetes_cluster.k8s_cluster.node_resource_group
+}
+
+output "k8s_cluster_fqdn" {
+  value = azurerm_kubernetes_cluster.k8s_cluster.fqdn
 }
 
 output "mi_principal_id" {
@@ -54,3 +62,7 @@ output "kubelet_client_id" {
 output "kubelet_object_id" {
   value = azurerm_kubernetes_cluster.k8s_cluster.kubelet_identity[0].object_id
 }
+
+/* output "ambassador_public_ip" {
+  value = azurerm_public_ip.ambassador-ingress.ip_address
+} */

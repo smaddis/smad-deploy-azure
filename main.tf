@@ -1,6 +1,9 @@
 locals {
   project_name    = terraform.workspace == "default" ? var.project_name : "${terraform.workspace}${var.project_name}"
   k8s_agent_count = terraform.workspace == "default" ? var.k8s_agent_count : var.testing_k8s_agent_count
+  k8s_dns_prefix  = terraform.workspace == "default" ? var.k8s_dns_prefix : "${terraform.workspace}-${var.k8s_dns_prefix}"
+  domain_name     = format("%s.westeurope.cloudapp.azure.com", local.k8s_dns_prefix)
+  email           = "email@example.com"
 }
 
 # module "tfstate_storage_azure" {
@@ -17,6 +20,7 @@ module "k8s_cluster_azure" {
   k8s_agent_count                = local.k8s_agent_count
   k8s_resource_group_name_suffix = var.k8s_resource_group_name_suffix
   project_name                   = local.project_name
+  k8s_dns_prefix                 = local.k8s_dns_prefix
   use_separate_storage_rg        = var.use_separate_storage_rg
 }
 
@@ -33,8 +37,9 @@ module "container_deployment" {
   source           = "./modules/container_deployment"
   mongodb_username = var.mongodb_username
   mongodb_password = var.mongodb_password
-
-  #depends_on here or no need?
+  k8s_dns_prefix   = local.k8s_dns_prefix
+  domain_name      = local.domain_name
+  #depends_on here or no need? 
   cluster_name = tostring(module.k8s_cluster_azure.k8s_cluster_name)
 
 }
@@ -48,6 +53,46 @@ module "influxdb" {
   source     = "./modules/influxdb"
   #  count      = var.enable_influxdb_module ? 1 : 0
 }
+
+###########################################
+###########################################
+### CRDs for Ambassador and cert-manager ##
+###########################################
+###########################################
+##Hardcoded manifest count value because of https://github.com/gavinbunney/terraform-provider-kubectl/issues/58
+## And the -temp resource doesn't work inside modules https://github.com/gavinbunney/terraform-provider-kubectl/issues/61
+data "kubectl_path_documents" "ambassador_mappings" {
+  pattern = "./ambassador_mappings.yaml"
+  vars = {
+    domain = local.domain_name
+  }
+}
+
+resource "kubectl_manifest" "ambassador_manifest" {
+  depends_on = [module.container_deployment]
+  wait       = true
+  count      = length(data.kubectl_path_documents.ambassador_mappings.documents)
+  yaml_body  = element(data.kubectl_path_documents.ambassador_mappings.documents, count.index)
+}
+
+data "kubectl_path_documents" "tls_mappings" {
+  pattern = "./tls_mappings.yaml"
+  vars = {
+    email  = local.email
+    domain = local.domain_name
+  }
+}
+
+resource "kubectl_manifest" "tls_manifest" {
+  depends_on = [module.container_deployment]
+  wait       = true
+  count      = length(data.kubectl_path_documents.tls_mappings.documents)
+  yaml_body  = element(data.kubectl_path_documents.tls_mappings.documents, count.index)
+}
+#########################
+#########################
+#########################
+#########################
 
 terraform {
 
@@ -63,6 +108,10 @@ terraform {
     helm = {
       source  = "hashicorp/helm"
       version = "~> 2.1.0"
+    }
+    kubectl = {
+      source  = "gavinbunney/kubectl"
+      version = ">= 1.11.2"
     }
   }
 
@@ -106,6 +155,15 @@ provider "helm" {
     client_certificate     = base64decode(module.k8s_cluster_azure.client_certificate)
     cluster_ca_certificate = base64decode(module.k8s_cluster_azure.cluster_ca_certificate)
   }
+}
+
+provider "kubectl" {
+  host                   = module.k8s_cluster_azure.host
+  client_key             = base64decode(module.k8s_cluster_azure.client_key)
+  client_certificate     = base64decode(module.k8s_cluster_azure.client_certificate)
+  cluster_ca_certificate = base64decode(module.k8s_cluster_azure.cluster_ca_certificate)
+  load_config_file       = false
+  apply_retry_count      = 15
 }
 
 resource "azurerm_role_assignment" "k8s-storage-role-ass" {

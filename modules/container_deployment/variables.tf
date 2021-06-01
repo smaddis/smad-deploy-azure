@@ -19,3 +19,12 @@ variable "mongodb_rootPassword" {
   type        = string
   description = "Optional password for  MongoDB"
 }
+
+
+variable "domain_name" {
+  type = string
+}
+
+variable "k8s_dns_prefix" {
+  type = string
+}

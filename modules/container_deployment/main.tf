@@ -65,7 +65,18 @@ resource "helm_release" "ambassador" {
     file("${path.module}/ambassador_values.yaml")
   ]
 
+  set {
+    name  = "adminService.create"
+    value = false
+  }
+
+  set {
+    name  = "service.annotations.service\\.beta\\.kubernetes\\.io/azure-dns-label-name"
+    value = var.k8s_dns_prefix
+  }
+
 }
+
 # https://github.com/jaegertracing/helm-charts/tree/72db111cf61e9d85f75b74a8398f2c98da0bc9d3/charts/jaeger-operator
 resource "helm_release" "jaeger-operator" {
   name = "jaeger-operator"
@@ -76,6 +87,13 @@ resource "helm_release" "jaeger-operator" {
   values = [
     file("${path.module}/jaeger_values.yaml")
   ]
+
+  /* 
+  set {
+    name  = "jaeger.spec.ingress.hosts"
+    value = "{${var.domain_name}}"
+  } 
+  */
 }
 
 # https://github.com/jetstack/cert-manager/tree/614438aed00e1060870b273f2238794ef69b60ab/deploy/charts/cert-manager
@@ -125,4 +143,14 @@ resource "helm_release" "kube-prometheus-stack" {
   values = [
     file("${path.module}/prom_values.yaml")
   ]
+
+  set {
+    name  = "grafana.ingress.hosts"
+    value = "{${var.domain_name}}"
+  }
+
+  set {
+    name  = "grafana.grafana\\.ini.server.domain"
+    value = var.domain_name
+  }
 }
