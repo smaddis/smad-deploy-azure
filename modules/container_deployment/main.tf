@@ -1,4 +1,4 @@
-# Information used: 
+# Information used:
 # https://github.com/hashicorp/terraform-provider-kubernetes/blob/0f97829b9df26a5d8f6719f750b6da71baa5454d/_examples/aks/main.tf
 # https://registry.terraform.io/providers/hashicorp/kubernetes/latest/docs/guides/getting-started
 # https://www.hashicorp.com/blog/kubernetes-cluster-with-aks-and-terraform
@@ -38,7 +38,7 @@ resource "helm_release" "hono" {
 
   repository      = "https://eclipse.org/packages/charts"
   chart           = "hono"
-  version         = "~> 1.5.9"
+  version         = "~> 1.9.4"
   cleanup_on_fail = "true"
   #depends_on      = [helm_release.mongodb]
   values = [
