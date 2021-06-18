@@ -29,13 +29,12 @@ module "k8s_cluster_azure" {
 #}
 
 module "container_deployment" {
-  providers        = { kubernetes = kubernetes, helm = helm }
   depends_on       = [module.k8s_cluster_azure]
   source           = "./modules/container_deployment"
   mongodb_username = var.mongodb_username
   mongodb_password = var.mongodb_password
 
-  #depends_on here or no need? 
+  #depends_on here or no need?
   cluster_name = tostring(module.k8s_cluster_azure.k8s_cluster_name)
 
 }
@@ -45,7 +44,6 @@ module "datamodule" {
 }
 
 module "influxdb" {
-  providers  = { kubernetes = kubernetes, helm = helm }
   depends_on = [module.k8s_cluster_azure]
   source     = "./modules/influxdb"
   #  count      = var.enable_influxdb_module ? 1 : 0
@@ -117,4 +115,3 @@ resource "azurerm_role_assignment" "k8s-storage-role-ass" {
   principal_id                     = module.k8s_cluster_azure.mi_principal_id
   skip_service_principal_aad_check = true
 }
-
