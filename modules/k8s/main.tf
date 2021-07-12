@@ -15,7 +15,7 @@ resource "azurerm_resource_group" "k8s_rg" {
   name     = "${lower(var.project_name)}-${var.k8s_resource_group_name_suffix}"
   location = var.location
 }
-
+/*
 resource "random_id" "log_analytics_workspace_name_suffix" {
   byte_length = 8
 }
@@ -40,7 +40,7 @@ resource "azurerm_log_analytics_solution" "log_analytics_deployment" {
     product   = "OMSGallery/ContainerInsights"
   }
 }
-
+*/
 resource "azurerm_kubernetes_cluster" "k8s_cluster" {
   name                = "${lower(var.project_name)}-${var.k8s_cluster_name_suffix}"
   location            = azurerm_resource_group.k8s_rg.location
@@ -72,7 +72,7 @@ resource "azurerm_kubernetes_cluster" "k8s_cluster" {
     node_count = var.k8s_agent_count
     vm_size    = "Standard_D2_v2"
   }
-
+  /*
   addon_profile {
     oms_agent {
       enabled                    = true
@@ -82,7 +82,7 @@ resource "azurerm_kubernetes_cluster" "k8s_cluster" {
       enabled = false
     }
   }
-
+*/
   network_profile {
     load_balancer_sku = "Standard"
     network_plugin    = "kubenet"
@@ -142,4 +142,3 @@ resource "kubernetes_persistent_volume_claim" "influxdb" {
     storage_class_name = "azure-disk-retain"
   }
 }
-
