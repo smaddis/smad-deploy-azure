@@ -43,7 +43,14 @@ resource "helm_release" "hono" {
   values = [
     file("${path.module}/hono_values.yaml")
   ]
-
+  set {
+    name  = "kafkaMessagingClusterExample.enabled"
+    value = "true"
+  }
+  set {
+    name  = "AmqpMessagingNetworkExample.enabled"
+    value = "false"
+  }
   set_sensitive {
     name  = "deviceRegistryExample.mongoDBBasedDeviceRegistry.mongodb.username"
     value = var.mongodb_username
@@ -88,11 +95,11 @@ resource "helm_release" "jaeger-operator" {
     file("${path.module}/jaeger_values.yaml")
   ]
 
-  /* 
+  /*
   set {
     name  = "jaeger.spec.ingress.hosts"
     value = "{${var.domain_name}}"
-  } 
+  }
   */
 }
 

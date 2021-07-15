@@ -19,3 +19,5 @@ deviceRegistryExample:
 adapters:
   http:
     enabled: false
+messagingNetworkTypes:
+  - kafka
