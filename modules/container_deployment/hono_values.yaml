@@ -10,6 +10,7 @@ mongodb:
   createInstance: false
 deviceRegistryExample:
   type: "mongodb"
+  addExampleData: false
   mongoDBBasedDeviceRegistry:
     mongodb:
       host: "mongodb"
