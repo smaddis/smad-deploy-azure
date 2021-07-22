@@ -7,7 +7,7 @@ variable "location" {
 }
 
 variable "project_name" {
-  default = "kuksatrng"
+  default = "smaddis"
 }
 
 # You can use the same resource group that was used with K8S cluster in AKS
@@ -20,14 +20,14 @@ variable "container_registry_name_suffix" {
   default = "k8stestcr"
 }
 
-# Get this from 
+# Get this from
 # azurerm_kubernetes_cluster.aks.node_resource_group .
 # Note the 'aks'. Change it to whatever you use.
 variable "k8s_cluster_node_resource_group" {
   default = ""
 }
 
-# You can use 
+# You can use
 # "${azurerm_kubernetes_cluster.aks.name}-agentpool"
 # which should take into account naming convention used in ./modules/k8s/main.tf
 # or use
@@ -36,4 +36,3 @@ variable "k8s_cluster_node_resource_group" {
 variable "k8s_cluster_kubelet_managed_identity_id" {
   default = ""
 }
-

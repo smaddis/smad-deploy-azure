@@ -6,15 +6,6 @@ locals {
   email           = "email@example.com"
 }
 
-# module "tfstate_storage_azure" {
-#     source  = "./modules/tfstate_storage_azure"
-#
-#     location = "West Europe"
-#     project_name = "kuksatrng"
-#     environment = "development"
-#     tfstate_storage_account_name_suffix = "tfstatesa"
-# }
-
 module "k8s_cluster_azure" {
   source                         = "./modules/k8s"
   k8s_agent_count                = local.k8s_agent_count
@@ -22,6 +13,7 @@ module "k8s_cluster_azure" {
   project_name                   = local.project_name
   k8s_dns_prefix                 = local.k8s_dns_prefix
   use_separate_storage_rg        = var.use_separate_storage_rg
+  separate_storage_rg_name       = data.terraform_remote_state.storagestate.outputs.rg_name
 }
 
 #module "container_registry_for_k8s" {
@@ -39,19 +31,24 @@ module "container_deployment" {
   mongodb_password = var.mongodb_password
   k8s_dns_prefix   = local.k8s_dns_prefix
   domain_name      = local.domain_name
-  #depends_on here or no need? 
-  cluster_name = tostring(module.k8s_cluster_azure.k8s_cluster_name)
-
+  cluster_name     = tostring(module.k8s_cluster_azure.k8s_cluster_name)
 }
 
-module "datamodule" {
-  source = "./modules/datam"
+data "terraform_remote_state" "storagestate" {
+  workspace = terraform.workspace
+  backend   = "azurerm"
+  config = {
+    resource_group_name  = "smaddis-tfstate-rg"
+    storage_account_name = "smaddistfstatesa"
+    container_name       = "tfstate"
+    key                  = "smaddis-storage.tfstate"
+  }
 }
 
+#TO DO: check if depends_on is needed
 module "influxdb" {
   depends_on = [module.k8s_cluster_azure]
   source     = "./modules/influxdb"
-  #  count      = var.enable_influxdb_module ? 1 : 0
 }
 
 ###########################################
@@ -99,19 +96,19 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "~> 2.45.1"
+      version = "~> 2.68.0"
     }
     kubernetes = {
       source  = "hashicorp/kubernetes"
-      version = "~> 2.0.3"
+      version = "~> 2.3.2"
     }
     helm = {
       source  = "hashicorp/helm"
-      version = "~> 2.1.0"
+      version = "~> 2.2.0"
     }
     kubectl = {
       source  = "gavinbunney/kubectl"
-      version = ">= 1.11.2"
+      version = "~> 1.11.2"
     }
   }
 
@@ -127,13 +124,13 @@ terraform {
     # https://docs.microsoft.com/en-us/azure/developer/terraform/store-state-in-azure-storage
     #
     # Set to "${lower(var.project_name)}-${var.tfstate_resource_group_name_suffix}"
-    resource_group_name = "kuksatrng-tfstate-rg"
+    resource_group_name = "smaddis-tfstate-rg"
     # Set to "${lower(var.project_name)}${var.tfstate_storage_account_name_suffix}"
-    storage_account_name = "kuksatrngtfstatesa"
+    storage_account_name = "smaddistfstatesa"
     # Set to var.tfstate_container_name
     container_name = "tfstate"
     # Set up "${lower(var.project_name)}.tfstate"
-    key = "kuksatrng.tfstate"
+    key = "smaddis.tfstate"
   }
 }
 
@@ -167,8 +164,8 @@ provider "kubectl" {
 }
 
 resource "azurerm_role_assignment" "k8s-storage-role-ass" {
-  count                            = var.use_separate_storage_rg ? 1 : 0
-  scope                            = module.datamodule.storagestate_rg_id
+  #  count                            = var.use_separate_storage_rg ? 1 : 0
+  scope                            = data.terraform_remote_state.storagestate.outputs.rg_id
   role_definition_name             = "Owner" # This needs to be changed to a more restrictive role
   principal_id                     = module.k8s_cluster_azure.mi_principal_id
   skip_service_principal_aad_check = true

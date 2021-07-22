@@ -7,7 +7,3 @@ output "kube_config" {
 output "kubeconfig_path" {
   value = abspath("${path.root}/kubeconfig")
 }
-
-output "storagestate_rg_id" {
-  value = module.datamodule.storagestate_rg_id
-}
