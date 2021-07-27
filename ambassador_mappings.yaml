@@ -23,6 +23,14 @@ spec:
   service: hono-service-device-registry-ext:15671
 ---
 apiVersion: getambassador.io/v2
+kind:  TCPMapping
+metadata:
+  name: hono-kafka-external
+spec:
+  port: 9092
+  service: hono-kafka-0-external:9092
+---
+apiVersion: getambassador.io/v2
 kind:  Mapping
 metadata:
   name: prometheus-grafana
