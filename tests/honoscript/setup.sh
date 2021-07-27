@@ -1,6 +1,7 @@
 #!/bin/bash
 
 declare -i  TIME=5
+declare -i  INSTALL_TIME=200
 
 function die() {
     echo "$@" >&2
@@ -14,7 +15,7 @@ function check_hono_cli() {
 function hono_cli_install() {
     check_hono_cli && return 0
 
-    curl -m $TIME -o hono-cli-1.9.0-exec.jar https://download.eclipse.org/hono/hono-cli-1.9.0-exec.jar || return 1
+    curl -m $INSTALL_TIME -o hono-cli-1.9.0-exec.jar https://download.eclipse.org/hono/hono-cli-1.9.0-exec.jar || return 1
 
     check_hono_cli
 }
@@ -30,7 +31,7 @@ REGISTRY_IP=$(timeout $TIME kubectl get service hono-service-device-registry-ext
 #HTTP_ADAPTER_IP=$(timeout $TIME kubectl get service hono-adapter-http-vertx -o json | jq -r .status.loadBalancer.ingress[0].ip)
 MQTT_ADAPTER_IP=$(timeout $TIME kubectl get service hono-adapter-mqtt-vertx -o json | jq -r .status.loadBalancer.ingress[0].ip)
 KAFKA_IP=$(timeout $TIME kubectl get service hono-kafka-0-external -o json | jq -r .status.loadBalancer.ingress[0].ip)
-KAFKA_TRUSTSTORE_PATH=./truststore.jks 
+KAFKA_TRUSTSTORE_PATH=./truststore.jks
 kubectl get secrets hono-kafka-jks --template="{{index .data \"kafka.truststore.jks\" | base64decode}}" -n default > $KAFKA_TRUSTSTORE_PATH
 
 AMQP_NETWORK_IP=$(timeout $TIME kubectl get service hono-dispatch-router-ext -o json | jq -r .status.loadBalancer.ingress[0].ip)

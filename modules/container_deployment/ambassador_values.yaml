@@ -26,3 +26,6 @@ service:
     - name: prometheus
       port: 9090
       targetPort: 9090
+    - name: kafka
+      port: 9092
+      targetPort: 9092
