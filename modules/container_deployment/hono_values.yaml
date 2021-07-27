@@ -16,3 +16,6 @@ deviceRegistryExample:
       host: "mongodb"
       port: 27017
       dbName: "honodb"
+adapters:
+  http:
+    enabled: false
