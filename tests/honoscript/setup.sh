@@ -2,7 +2,7 @@
 
 declare -i  TIME=5
 
-function die() { 
+function die() {
     echo "$@" >&2
     exit 13
 }
@@ -27,11 +27,11 @@ which pwgen &> /dev/null || die "Needs pwgen"
 which mosquitto_pub &> /dev/null || die "Needs mosquitto-clients"
 
 REGISTRY_IP=$(timeout $TIME kubectl get service hono-service-device-registry-ext -o json | jq -r .status.loadBalancer.ingress[0].ip)
-HTTP_ADAPTER_IP=$(timeout $TIME kubectl get service hono-adapter-http-vertx -o json | jq -r .status.loadBalancer.ingress[0].ip)
+#HTTP_ADAPTER_IP=$(timeout $TIME kubectl get service hono-adapter-http-vertx -o json | jq -r .status.loadBalancer.ingress[0].ip)
 MQTT_ADAPTER_IP=$(timeout $TIME kubectl get service hono-adapter-mqtt-vertx -o json | jq -r .status.loadBalancer.ingress[0].ip)
 AMQP_NETWORK_IP=$(timeout $TIME kubectl get service hono-dispatch-router-ext -o json | jq -r .status.loadBalancer.ingress[0].ip)
 : ${REGISTRY_IP:?'Could not find registry ip'}
-: ${HTTP_ADAPTER_IP:?'Could not find HTTP adapter ip'}
+#: ${HTTP_ADAPTER_IP:?'Could not find HTTP adapter ip'}
 : ${MQTT_ADAPTER_IP:?'Could not find MQTT adapter ip'}
 : ${AMQP_NETWORK_IP:?'Could not find AMQP network ip'}
 
@@ -73,11 +73,10 @@ curl -m $TIME -f -X PUT \
     http://$REGISTRY_IP:28080/v1/credentials/$MY_TENANT/$MY_DEVICE || die "could not set password so curling failed"
 
 
-
+#ADD "HTTP_ADAPTER_IP": "${HTTP_ADAPTER_IP}" when needed for HTTP messaging
 cat > config.json <<JSON
 {
     "REGISTRY_IP": "${REGISTRY_IP}",
-    "HTTP_ADAPTER_IP": "${HTTP_ADAPTER_IP}",
     "MQTT_ADAPTER_IP": "${MQTT_ADAPTER_IP}",
     "AMQP_NETWORK_IP": "${AMQP_NETWORK_IP}",
     "MY_TENANT": "${MY_TENANT}",

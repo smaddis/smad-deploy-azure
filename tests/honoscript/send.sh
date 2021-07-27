@@ -2,21 +2,22 @@
 
 function usage() {
 
-    echo Usage: ./send.sh [PROTOCOL http/mqtt] [MESSAGE event/telemetry] >&2
+    echo Usage: ./send.sh [PROTOCOL mqtt] [MESSAGE event/telemetry] >&2
+#    echo Usage: ./send.sh [PROTOCOL http/mqtt] [MESSAGE event/telemetry] >&2
     exit 13
 }
 
-function http_message() {
-    local MESSAGE_TYPE="$1"
-    local CONTENT="$2"
+#function http_message() {
+#    local MESSAGE_TYPE="$1"
+#    local CONTENT="$2"
 
-    curl -i -u $MY_DEVICE@$MY_TENANT:$MY_PWD \
-    -H 'Content-Type: application/json' \
-    --data-binary "${CONTENT}" \
-    http://$HTTP_ADAPTER_IP:8080/$MESSAGE_TYPE
+#    curl -i -u $MY_DEVICE@$MY_TENANT:$MY_PWD \
+#    -H 'Content-Type: application/json' \
+#    --data-binary "${CONTENT}" \
+#    http://$HTTP_ADAPTER_IP:8080/$MESSAGE_TYPE
 
-    echo "HTTP ${MESSAGE_TYPE} message sent"
-}
+#    echo "HTTP ${MESSAGE_TYPE} message sent"
+#}
 # Parameters given Message type and content
 function mqtt_message() {
     local MESSAGE_TYPE="$1"
@@ -37,7 +38,7 @@ test -f $info || (echo "missing config.json" && exit 1)
 MY_DEVICE=$(jq -r .MY_DEVICE < $info)
 MY_TENANT=$(jq -r .MY_TENANT < $info)
 MY_PWD=$(jq -r .MY_PWD <$info)
-HTTP_ADAPTER_IP=$(jq -r .HTTP_ADAPTER_IP <$info)
+#HTTP_ADAPTER_IP=$(jq -r .HTTP_ADAPTER_IP <$info)
 MQTT_ADAPTER_IP=$(jq -r .MQTT_ADAPTER_IP <$info)
 
 if [[ "$#" = 2 ]]; then
@@ -49,10 +50,10 @@ if [[ "$#" = 2 ]]; then
     esac
     # Execute given argument with CONTENT and MESSAGE TYPE parameters
     case $1 in
-        http ) http_message "$2" $CONTENT ;;
+#        http ) http_message "$2" $CONTENT ;;
         mqtt ) mqtt_message "$2" $CONTENT ;;
         * ) usage;;
     esac
-else 
+else
     usage
 fi
