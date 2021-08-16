@@ -1,7 +1,3 @@
-variable "cluster_name" {
-  type = string
-}
-
 variable "mongodb_username" {
   default     = "honouser"
   type        = string
@@ -18,13 +14,4 @@ variable "mongodb_rootPassword" {
   default     = "root-secret"
   type        = string
   description = "Optional password for  MongoDB"
-}
-
-
-variable "domain_name" {
-  type = string
-}
-
-variable "k8s_dns_prefix" {
-  type = string
 }
