@@ -87,12 +87,14 @@ resource "kubernetes_persistent_volume_claim" "mongodb" {
   }
   spec {
     access_modes = ["ReadWriteOnce"]
+    volume_name = "mongo-volume"
+    storage_class_name = "azure-disk-retain"
     resources {
       requests = {
         storage = "8Gi"
       }
     }
-    storage_class_name = "azure-disk-retain"
+    
   }
 }
 
@@ -102,11 +104,12 @@ resource "kubernetes_persistent_volume_claim" "influxdb" {
   }
   spec {
     access_modes = ["ReadWriteOnce"]
+    volume_name = "influx-volume"
+    storage_class_name = "azure-disk-retain"
     resources {
       requests = {
         storage = "8Gi"
       }
     }
-    storage_class_name = "azure-disk-retain"
   }
 }
