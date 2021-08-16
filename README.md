@@ -23,7 +23,7 @@ Architectural description of the codebase can be found at [ARCHITECTURE.md](./do
 
 1. Create Terraform State storage group and account to Azure
 ```bash
-$ terraform apply ./00_tfstate_storage_azure
+$ terraform apply ./00_tfstate_storage
 ```
 ### No separate storage resource group (default)
 

@@ -52,42 +52,23 @@ To change your selected subscription
 $ az account set -s <$SUBSCRIPTION_ID_OR_NAME>
 ```
 
-### Setting variables before deploying resources
-
-#### via a tfvars file
-Run 
-```
-$ terraform apply -var-file=./example.tfvars
-``` 
-to set variables from 'example.tfvars' -file.
-#### via command line arguments
-Run 
-```
-$ terraform apply -var=use_separate_storage_rg=true
-``` 
-to set a variable named 'use_separate_storage_rg' to have value 'true' via command line. With this variable set as 'true', you effectively switch the K8S cluster to use a separate resource group for storage.
-
-### Terraform plan
-
-Run `$ terraform plan` to see an overview of the resources that will be deployed.
-
-### Create a storage account to store shared state for Terraform
+# 0. Create a storage account to store shared state for Terraform
 [Shared state](https://www.terraform.io/docs/language/state/remote.html) should always be preferred when working with Terraform.
 
 In order to create one run 
 ```
-$ terraform apply './modules/tfstate_storage_azure/'
+$ terraform apply './00_tfstate_storage'
 ```
 
 This creates:
-- Azure Resource Group (default name 'kuksatrng-tfstate-rg')
-- Azure Storage Account (default name 'kuksatrngtfstatesa')
+- Azure Resource Group (default name 'smaddis-tfstate-rg')
+- Azure Storage Account (default name 'smaddistfstatesa')
 - Azure Storage Container (default name 'tfstate')
 
-You can customize naming in './modules/tfstate_storage_azure/variables.tf'.
+You can customize naming in './00_tfstate_storage/variables.tf'.
 Check file content for naming restrictions and details.
 
-# Terraform Workspaces
+## Terraform Workspaces
 
 It is recommended that you familiarize yourself with [Terraform Workspaces](https://www.terraform.io/docs/language/state/workspaces.html) concept and utilize them when using these scripts.
 
@@ -108,42 +89,58 @@ All commands can be shown with
 $ terraform workspace
 ```
 
-## Workspace-specific configurations
+### Workspace-specific configurations
 
-### Default workspace:
+#### Default workspace:
 Resources are not prefixed, so only one instance of the deployment can be set up at a time. The cluster is assigned 3 nodes in the default workspace configuration.
 
-### Non-default workspace:
+#### Non-default workspace:
 Resources are prefixed, so multiple instances of the deployment can be set up at a time. The cluster is assigned 2 nodes in the non-default workspace configuration.
 
 Example:
 ```
 Terraform Workspace name: testdeploy
-Project name: kuksatrng
-Name for resources: testdeploy-kuksatrng
+Project name: smaddis
+Name for resources: testdeploy-smaddis
 ```
+
+### Setting variables before deploying resources
+
+#### via command line arguments
+Run 
+```
+$ terraform apply -var=use_separate_storage_rg=true
+``` 
+to set a variable named 'use_separate_storage_rg' to have value 'true' via command line. With this variable set as 'true', you effectively switch the K8S cluster to use a separate resource group for storage.
+
+### Terraform plan
+
+Run `$ terraform plan` to see an overview of the resources that will be deployed.
+
 
 # Deploy the SMAD stack
 
-Ensure that you have created proper Terraform state resources to Azure with [tfstate_storage_azure module](#create-a-storage-account-to-store-shared-state-for-terraform), before continuing to this part.
+Ensure that you have created proper Terraform state resources to Azure with [00_tfstate_storage](#create-a-storage-account-to-store-shared-state-for-terraform), before continuing to this part.
 
-## Deploy the main service stack with default parameters (see variables.tf)
-If you want to use a separate resource group for storage, skip this step.
 
-```bash
-$ terraform apply ./
+## 1. Create separate resource group
+
+Create separate resource group for databases. Be sure to use the same workspace as when deploying the main service stack
+
+```
+$ terraform apply ./01_storage_rg
 ```
 
-## OPTIONAL: Separate resource group
+## 2. Deploy the main service stack with default parameters (see variables.tf)
 
-1. Create separate resource group for databases
 ```
-$ terraform apply ./modules/storage_rg
+$ terraform apply ./02_deployHono
 ```
 
-2. Deploy the main service stack with `use_separate_storage_rg=true`
+If you want to use a separate resource group for storage: 
+Deploy the main service stack with `use_separate_storage_rg=true`
 ```
-$ terraform apply -var=use_separate_storage_rg=true ./
+$ terraform apply -var=use_separate_storage_rg=true ./02_deployHono
 ```
 # Configuration
 

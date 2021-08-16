@@ -18,39 +18,6 @@ variable "project_name" {
 }
 
 #
-## Terraform Shared State -module related variables
-#
-# NOTE:
-# Since storage for Terraform Shared State cannot be created in the
-# same Terraform script that creates K8S resources, these variables are
-# also defined in './modules/tfstate_storage_azure/variables.tf'.
-# If you already have a storage for Terraform Shared State, you can
-# change these variables to match your configuration.
-# If you plan to customize these variables when creating storage for
-# Terraform Shared State with './modules/tfstate_storage_azure/main.tf',
-# you must also change the variables in
-# './modules/tfstate_storage_azure/variables.tf'.
-
-variable "tfstate_resource_group_name_suffix" {
-  default = "tfstate-rg"
-  type    = string
-}
-
-# 'name' must be unique across the entire Azure service,
-#  not just within the resource group.
-# 'name' can only consist of lowercase letters and numbers,
-#  and must be between 3 and 24 characters long.
-variable "tfstate_storage_account_name_suffix" {
-  default = "tfstatesa"
-  type    = string
-}
-
-variable "tfstate_container_name" {
-  default = "tfstate"
-  type    = string
-}
-
-#
 ## Azure Kubernetes Service -module related variables
 #
 
@@ -64,10 +31,6 @@ variable "testing_k8s_agent_count" {
   default = 2
   type    = number
 }
-
-# variable "k8s_ssh_public_key" {
-#     default = "~/.ssh/id_rsa.pub"
-# }
 
 variable "k8s_dns_prefix" {
   default = "k8s"
@@ -112,7 +75,7 @@ variable "resource_group_name" {
 }
 
 ###################################
-## Container deployment variables##
+## Hono deployment variables##
 ###################################
 
 variable "mongodb_username" {
@@ -126,7 +89,7 @@ variable "mongodb_password" {
 }
 
 variable "use_separate_storage_rg" {
-  default     = false
+  default     = true
   type        = bool
   description = "If true, use a separate resource group for storage needs. The resource group must be created via the separate module beforehand."
 }
