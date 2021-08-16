@@ -6,34 +6,6 @@ locals {
   email           = "email@example.com"
 }
 
-module "k8s_cluster_azure" {
-  source                         = "./modules/k8s"
-  k8s_agent_count                = local.k8s_agent_count
-  k8s_resource_group_name_suffix = var.k8s_resource_group_name_suffix
-  project_name                   = local.project_name
-  k8s_dns_prefix                 = local.k8s_dns_prefix
-  use_separate_storage_rg        = var.use_separate_storage_rg
-  separate_storage_rg_name       = data.terraform_remote_state.storagestate.outputs.rg_name
-}
-
-#module "container_registry_for_k8s" {
-#  source                                   = "./modules/container_registry"
-#  container_registry_resource_group_suffix = var.container_registry_resource_group_suffix
-#  project_name                             = local.project_name
-#  k8s_cluster_node_resource_group          = module.k8s_cluster_azure.k8s_cluster_node_resource_group
-#  k8s_cluster_kubelet_managed_identity_id  = module.k8s_cluster_azure.kubelet_object_id
-#}
-
-module "container_deployment" {
-  depends_on       = [module.k8s_cluster_azure]
-  source           = "./modules/container_deployment"
-  mongodb_username = var.mongodb_username
-  mongodb_password = var.mongodb_password
-  k8s_dns_prefix   = local.k8s_dns_prefix
-  domain_name      = local.domain_name
-  cluster_name     = tostring(module.k8s_cluster_azure.k8s_cluster_name)
-}
-
 data "terraform_remote_state" "storagestate" {
   workspace = terraform.workspace
   backend   = "azurerm"
@@ -45,11 +17,63 @@ data "terraform_remote_state" "storagestate" {
   }
 }
 
+############ MODULES ###########
+module "k8s_cluster_azure" {
+  source                         = "./modules/k8s"
+  k8s_agent_count                = local.k8s_agent_count
+  k8s_resource_group_name_suffix = var.k8s_resource_group_name_suffix
+  project_name                   = local.project_name
+  k8s_dns_prefix                 = local.k8s_dns_prefix
+  use_separate_storage_rg        = var.use_separate_storage_rg
+  separate_storage_rg_name       = data.terraform_remote_state.storagestate.outputs.rg_name
+}
+
+module "hono" {
+  depends_on       = [module.k8s_cluster_azure]
+  source           = "./modules/hono"
+  mongodb_username = var.mongodb_username
+  mongodb_password = var.mongodb_password
+  #  domain_name      = local.domain_name
+  # cluster_name     = tostring(module.k8s_cluster_azure.k8s_cluster_name)
+}
+
 #TO DO: check if depends_on is needed
 module "influxdb" {
   depends_on = [module.k8s_cluster_azure]
   source     = "./modules/influxdb"
 }
+
+#TO DO: check if depends_on is needed
+module "mongodb" {
+  depends_on       = [module.k8s_cluster_azure]
+  source           = "./modules/mongodb"
+  mongodb_username = var.mongodb_username
+  mongodb_password = var.mongodb_password
+}
+
+module "kube_prometheus_stack" {
+  depends_on  = [module.k8s_cluster_azure]
+  source      = "./modules/kube_prometheus_stack"
+  domain_name = local.domain_name
+}
+
+module "ambassador" {
+  depends_on     = [module.k8s_cluster_azure]
+  source         = "./modules/ambassador"
+  k8s_dns_prefix = local.k8s_dns_prefix
+}
+module "jaeger" {
+  depends_on = [module.k8s_cluster_azure]
+  source     = "./modules/jaeger"
+}
+
+#module "container_registry_for_k8s" {
+#  source                                   = "./modules/container_registry"
+#  container_registry_resource_group_suffix = var.container_registry_resource_group_suffix
+#  project_name                             = local.project_name
+#  k8s_cluster_node_resource_group          = module.k8s_cluster_azure.k8s_cluster_node_resource_group
+#  k8s_cluster_kubelet_managed_identity_id  = module.k8s_cluster_azure.kubelet_object_id
+#}
 
 ###########################################
 ###########################################
@@ -66,7 +90,7 @@ data "kubectl_path_documents" "ambassador_mappings" {
 }
 
 resource "kubectl_manifest" "ambassador_manifest" {
-  depends_on = [module.container_deployment]
+  depends_on = [module.hono]
   wait       = true
   count      = length(data.kubectl_path_documents.ambassador_mappings.documents)
   yaml_body  = element(data.kubectl_path_documents.ambassador_mappings.documents, count.index)
@@ -81,7 +105,7 @@ data "kubectl_path_documents" "tls_mappings" {
 }
 
 resource "kubectl_manifest" "tls_manifest" {
-  depends_on = [module.container_deployment]
+  depends_on = [module.hono]
   wait       = true
   count      = length(data.kubectl_path_documents.tls_mappings.documents)
   yaml_body  = element(data.kubectl_path_documents.tls_mappings.documents, count.index)
