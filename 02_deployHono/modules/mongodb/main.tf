@@ -22,4 +22,5 @@ resource "helm_release" "mongodb" {
     name  = "auth.username"
     value = var.mongodb_username
   }
+
 }

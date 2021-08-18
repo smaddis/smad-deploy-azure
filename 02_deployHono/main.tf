@@ -16,6 +16,7 @@ data "terraform_remote_state" "storagestate" {
     key                  = "smaddis-storage.tfstate"
   }
 }
+
 #module "container_registry_for_k8s" {
 #  source                                   = "./modules/container_registry"
 #  container_registry_resource_group_suffix = var.container_registry_resource_group_suffix
@@ -34,6 +35,12 @@ module "k8s" {
   k8s_dns_prefix                 = local.k8s_dns_prefix
   use_separate_storage_rg        = var.use_separate_storage_rg
   separate_storage_rg_name       = data.terraform_remote_state.storagestate.outputs.rg_name
+  storage_share_influx           = data.terraform_remote_state.storagestate.outputs.storage_share_influx
+  storage_share_mongo            = data.terraform_remote_state.storagestate.outputs.storage_share_mongo
+  storage_share_kafka            = data.terraform_remote_state.storagestate.outputs.storage_share_kafka
+  storage_share_zookeeper        = data.terraform_remote_state.storagestate.outputs.storage_share_zookeeper
+  storage_acc_name               = data.terraform_remote_state.storagestate.outputs.storage_acc_name
+  storage_acc_key                = data.terraform_remote_state.storagestate.outputs.storage_acc_key
 }
 
 module "hono" {
@@ -43,13 +50,11 @@ module "hono" {
   mongodb_password = var.mongodb_password
 }
 
-#TO DO: check if depends_on is needed
 module "influxdb" {
   depends_on = [module.k8s]
   source     = "./modules/influxdb"
 }
 
-#TO DO: check if depends_on is needed
 module "mongodb" {
   depends_on       = [module.k8s]
   source           = "./modules/mongodb"

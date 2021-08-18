@@ -21,3 +21,11 @@ adapters:
     enabled: false
 messagingNetworkTypes:
   - kafka
+kafka:
+  persistence:
+    existingClaim: "kafkapvc"
+    size: 5Gi
+  zookeeper:
+    persistence:
+      existingClaim: "zookeeperpvc"
+      size: 5Gi

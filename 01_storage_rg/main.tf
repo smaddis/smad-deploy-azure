@@ -35,5 +35,58 @@ provider "azurerm" {
 
 resource "azurerm_resource_group" "storage_rg" {
   name     = "storage-resource-group-${terraform.workspace}"
-  location = "West Europe"
+  location = var.location
 }
+resource "azurerm_storage_account" "storage_account" {
+  name                     = "storage${terraform.workspace}"
+  resource_group_name      = azurerm_resource_group.storage_rg.name
+  location                 = var.location
+  account_tier             = "Standard"
+  account_replication_type = "LRS"
+}
+
+resource "azurerm_storage_share" "influx_share" {
+  name                 = "influx-share${terraform.workspace}"
+  storage_account_name = azurerm_storage_account.storage_account.name
+  quota                = 10
+}
+
+resource "azurerm_storage_share" "mongo_share" {
+  name                 = "mongo-share${terraform.workspace}"
+  storage_account_name = azurerm_storage_account.storage_account.name
+  quota                = 10
+}
+resource "azurerm_storage_share" "kafka_share" {
+  name                 = "kafka-share${terraform.workspace}"
+  storage_account_name = azurerm_storage_account.storage_account.name
+  quota                = 10
+}
+
+resource "azurerm_storage_share" "zookeeper_share" {
+  name                 = "zookeeper-share${terraform.workspace}"
+  storage_account_name = azurerm_storage_account.storage_account.name
+  quota                = 10
+}
+resource "azurerm_storage_share" "hono_share" {
+  name                 = "hono-share${terraform.workspace}"
+  storage_account_name = azurerm_storage_account.storage_account.name
+  quota                = 10
+}
+/*
+resource "azurerm_managed_disk" "influx" {
+  name                 = "influx"
+  location             = var.location
+  resource_group_name  = "storage-resource-group-${terraform.workspace}"
+  storage_account_type = "Standard_LRS"
+  create_option        = "Empty"
+  disk_size_gb         = "8"
+}
+resource "azurerm_managed_disk" "example" {
+  name                 = "example"
+  location             = var.location
+  resource_group_name  = "storage-resource-group-${terraform.workspace}"
+  storage_account_type = "Standard_LRS"
+  create_option        = "Empty"
+  disk_size_gb         = "8"
+}
+*/
