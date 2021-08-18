@@ -27,9 +27,6 @@ resource "helm_release" "hono" {
     value = var.mongodb_password
   }
 }
-
-
-
 # https://github.com/jetstack/cert-manager/tree/614438aed00e1060870b273f2238794ef69b60ab/deploy/charts/cert-manager
 resource "helm_release" "cert-manager" {
   name = "cert-manager"
@@ -43,4 +40,3 @@ resource "helm_release" "cert-manager" {
     value = "true"
   }
 }
-
