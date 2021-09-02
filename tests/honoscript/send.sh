@@ -23,7 +23,7 @@ function mqtt_message() {
     local MESSAGE_TYPE="$1"
     local CONTENT="$2"
 
-    mosquitto_pub -h $MQTT_ADAPTER_IP \
+    mosquitto_pub -h $DOMAIN_NAME -p $MQTT_PORT \
     -u $MY_DEVICE@$MY_TENANT -P $MY_PWD \
     -t $MESSAGE_TYPE -q 1 -m "${CONTENT}"
 
@@ -38,8 +38,9 @@ test -f $info || (echo "missing config.json" && exit 1)
 MY_DEVICE=$(jq -r .MY_DEVICE < $info)
 MY_TENANT=$(jq -r .MY_TENANT < $info)
 MY_PWD=$(jq -r .MY_PWD <$info)
-#HTTP_ADAPTER_IP=$(jq -r .HTTP_ADAPTER_IP <$info)
-MQTT_ADAPTER_IP=$(jq -r .MQTT_ADAPTER_IP <$info)
+DOMAIN_NAME=$(jq -r .DOMAIN_NAME <$info)
+MQTT_PORT=$(jq -r .MQTT_PORT <$info)
+MQTT_SECURE_PORT=$(jq -r .MQTT_SECURE_PORT <$info)
 
 if [[ "$#" = 2 ]]; then
     # Determine content type per message type given as argument

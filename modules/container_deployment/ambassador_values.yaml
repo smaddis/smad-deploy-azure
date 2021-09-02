@@ -11,6 +11,9 @@ service:
     - name: mqtt-adapter
       port: 1883
       targetPort: 1883
+    - name: mqtt-adaptersec
+      port: 8883
+      targetPort: 8883
     - name: device-registry
       port: 28080
       targetPort: 28080

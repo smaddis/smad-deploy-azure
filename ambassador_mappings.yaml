@@ -4,7 +4,17 @@ metadata:
   name: hono-mqtt-adapter
 spec:
   port: 1883
+  #host: ${domain}
   service: hono-adapter-mqtt-vertx:1883
+---
+apiVersion: getambassador.io/v2
+kind:  TCPMapping
+metadata:
+  name: secure-hono-mqtt-adapter
+spec:
+  port: 8883
+  #host: ${domain}
+  service: hono-adapter-mqtt-vertx:8883
 ---
 apiVersion: getambassador.io/v2
 kind:  TCPMapping
@@ -12,6 +22,7 @@ metadata:
   name: hono-device-registry
 spec:
   port: 28080
+  #host: ${domain}
   service: hono-service-device-registry-ext:28080
 ---
 apiVersion: getambassador.io/v2
@@ -28,6 +39,7 @@ metadata:
   name: hono-kafka-external
 spec:
   port: 9092
+  #host: ${domain}
   service: hono-kafka-0-external:9092
 ---
 apiVersion: getambassador.io/v2
@@ -55,9 +67,9 @@ kind:  Mapping
 metadata:
   name: jaeger-operator-jaeger-query
 spec:
-  #port: 80
-  prefix: /jaeger/
-  rewrite: /jaeger/
+  port: 80
+  prefix: /jaeger
+  rewrite: /jaeger
   #host_redirect: true
   host: ${domain}
   service: jaeger-operator-jaeger-query:16686
@@ -68,8 +80,8 @@ metadata:
   name: jaeger-operator-jaeger-query-tcp
 spec:
   port: 16686
-  prefix: /jaeger/
-  host: ${domain}
+  #prefix: /jaeger/
+  #host: ${domain}
   service: jaeger-operator-jaeger-query:16686
 ---
 apiVersion: getambassador.io/v2
@@ -80,6 +92,16 @@ spec:
   prefix: /.well-known/acme-challenge/
   rewrite: ""
   service: acme-challenge-service
+---
+apiVersion: getambassador.io/v2
+kind: Mapping
+metadata:
+  name: hono-device-registry-mapping
+spec:
+  #port: 80
+  prefix: /registry
+  host: ${domain}
+  service: hono-service-device-registry-ext:28080
 ---
 apiVersion: getambassador.io/v2
 kind: TLSContext

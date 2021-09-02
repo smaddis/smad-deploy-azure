@@ -25,6 +25,7 @@ $ terraform apply ./modules/tf_state_storage_azure
 ```
 ### No separate storage resource group (default)
 
+2. Remember to edit `main.tf` email variable to a real one for TLS certificate
 2. Deploy main service stack
 
 ```bash
@@ -42,6 +43,16 @@ $ terraform apply ./modules/storage_rg
 ```
 $ terraform apply -var=use_separate_storage_rg=true ./
 ```
+
+## After deployment
+
+After deployment you can use following url for accessing services and adapters {terraform-workspace}.westeurope.cloudapp.azure.com
+
+Hono registry: `{terraform-workspace}.westeurope.cloudapp.azure.com/registry`
+
+Grafana: `{terraform-workspace}.westeurope.cloudapp.azure.com/grafana`
+
+Jaeger: `{terraform-workspace}.westeurope.cloudapp.azure.com/jaeger`
 
 ## License
 [MIT License](./LICENSE)
