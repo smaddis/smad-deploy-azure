@@ -180,9 +180,9 @@ resource "kubernetes_storage_class" "azure-disk-retain" {
   reclaim_policy      = "Retain"
   volume_binding_mode = "Immediate"
   parameters = {
-    kind          = "managed"
-    cachingMode   = "ReadOnly"
-  #  resourceGroup = var.use_separate_storage_rg ? "storage-resource-group" : null
+    kind        = "managed"
+    cachingMode = "ReadOnly"
+    #  resourceGroup = var.use_separate_storage_rg ? "storage-resource-group" : null
   } # implicitly create storage class in the same RG as K8S cluster if false ^^^
 }
 

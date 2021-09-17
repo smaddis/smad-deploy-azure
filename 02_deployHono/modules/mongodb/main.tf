@@ -1,6 +1,6 @@
 # https://github.com/bitnami/azure-marketplace-charts/tree/a2342181bacffa6d27d265db187dcc938af1c3f0/bitnami/mongodb
-resource "helm_release" "mongo_telemetry" {
-  name = "mongo_telemetry"
+resource "helm_release" "mongo-telemetry" {
+  name = "mongo-telemetry"
 
   repository      = "https://charts.bitnami.com/bitnami"
   chart           = "mongodb"
