@@ -32,3 +32,9 @@ service:
     - name: kafka
       port: 9092
       targetPort: 9092
+    - name: mongodb
+      port: 27017
+      targetPort: 27017
+    - name: mongo-telemetry
+      port: 28018
+      targetPort: 2018
