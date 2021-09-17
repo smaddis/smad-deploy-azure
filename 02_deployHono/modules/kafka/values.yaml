@@ -1,0 +1,137 @@
+livenessProbe:
+  initialDelaySeconds: 700
+readinessProbe:
+  initialDelaySeconds: 20
+persistence:
+  existingClaim: "kafkapvc"
+  size: 5Gi
+zookeeper:
+  persistence:
+    existingClaim: "zookeeperpvc"
+    size: 5Gi
+  auth:
+      enabled: true
+      clientUser: zookeeperUser
+      clientPassword: zookeeperPassword
+      serverUsers: zookeeperUser
+      serverPasswords: zookeeperPassword
+externalAccess:
+  enabled: true
+  service:
+    type: LoadBalancer
+    port: 9092
+    nodePorts:
+      - 32092
+  autoDiscovery:
+    enabled: true
+serviceAccount:
+  create: true
+rbac:
+  create: true
+nameOverride: kafka
+service:
+  port: 9094
+auth:
+  clientProtocol: sasl
+  interBrokerProtocol: plaintext
+  jaas:
+    clientUser: hono
+    clientPassword: hono-secret
+  sasl:
+    jaas:
+      clientUsers:
+        - "hono"
+      clientPasswords:
+        - "hono-secret"
+      zookeeperUser: zookeeperUser
+      zookeeperPassword: zookeeperPassword
+  tls:
+    type: jks
+    existingSecret: "{{ .Release.Name }}-kafka-jks"
+    password: honotrust
+
+extraDeploy:
+  - |
+    apiVersion: apps/v1
+    kind: Deployment
+    metadata:
+      name: {{ include "kafka.fullname" . }}-connect
+      labels: {{- include "common.labels.standard" . | nindent 4 }}
+        app.kubernetes.io/component: connector
+    spec:
+      replicas: 1
+      selector:
+        matchLabels: {{- include "common.labels.matchLabels" . | nindent 6 }}
+          app.kubernetes.io/component: connector
+      template:
+        metadata:
+          labels: {{- include "common.labels.standard" . | nindent 8 }}
+            app.kubernetes.io/component: connector
+        spec:
+          containers:
+            - name: connect
+              image: nindemic/mongokafkaconnect:1.0 
+              imagePullPolicy: IfNotPresent
+              ports:
+                - name: connector
+                  containerPort: 8083
+              volumeMounts:
+                - name: configuration
+                  mountPath: /bitnami/kafka/config
+          volumes:
+            - name: configuration
+              configMap:
+                name: {{ include "kafka.fullname" . }}-connect
+  - |
+    apiVersion: v1
+    kind: ConfigMap
+    metadata:
+      name: {{ include "kafka.fullname" . }}-connect
+      labels: {{- include "common.labels.standard" . | nindent 4 }}
+        app.kubernetes.io/component: connector
+    data:
+      connect-standalone.properties: |-
+        bootstrap.servers = {{ include "kafka.fullname" . }}-0.{{ include "kafka.fullname" . }}-headless.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }}:{{ .Values.service.port }}
+        key.converter=org.apache.kafka.connect.json.JsonConverter
+        value.converter=org.apache.kafka.connect.json.JsonConverter
+        key.converter.schemas.enable=true
+        value.converter.schemas.enable=true
+        offset.storage.file.filename=/tmp/connect.offsets
+        offset.flush.interval.ms=10000
+        plugin.path=/opt/bitnami/kafka/plugins
+        sasl.mechanism=PLAIN
+        security.protocol=SASL_PLAINTEXT
+        sasl.jaas.config=org.apache.kafka.common.security.plain.PlainLoginModule required \
+          username="hono" \
+          password="hono-secret";
+        consumer.sasl.mechanism=PLAIN
+        consumer.security.protocol=SASL_PLAINTEXT
+        consumer.sasl.jaas.config=org.apache.kafka.common.security.plain.PlainLoginModule required \
+          username="hono" \
+          password="hono-secret";
+      mongodb.properties: |-
+        connection.uri=mongodb://user:root@mongodb.default.svc.cluster.local:28018/mongo-telemetry
+        name=mongo-sink
+        topics=.
+        connector.class=com.mongodb.kafka.connect.MongoSinkConnector
+        tasks.max=1
+        key.converter=org.apache.kafka.connect.json.JsonConverter
+        value.converter=org.apache.kafka.connect.json.JsonConverter
+        key.converter.schemas.enable=false
+        value.converter.schemas.enable=false
+        database=telemetry
+        collection=sink
+  - |
+    apiVersion: v1
+    kind: Service
+    metadata:
+      name: {{ include "kafka.fullname" . }}-connect
+      labels: {{- include "common.labels.standard" . | nindent 4 }}
+        app.kubernetes.io/component: connector
+    spec:
+      ports:
+        - protocol: TCP
+          port: 8083
+          targetPort: connector
+      selector: {{- include "common.labels.matchLabels" . | nindent 4 }}
+        app.kubernetes.io/component: connector

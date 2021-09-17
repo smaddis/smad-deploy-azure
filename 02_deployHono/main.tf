@@ -47,8 +47,13 @@ module "persistent_storage" {
   storage_acc_key          = data.terraform_remote_state.storagestate.outputs.storage_acc_key
 }
 
+module "kafka" {
+  depends_on = [module.persistent_storage]
+  source     = "./modules/kafka"
+}
+
 module "hono" {
-  depends_on       = [module.persistent_storage]
+  depends_on       = [module.persistent_storage, module.kafka]
   source           = "./modules/hono"
   mongodb_username = var.mongodb_username
   mongodb_password = var.mongodb_password

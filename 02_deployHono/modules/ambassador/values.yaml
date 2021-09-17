@@ -37,4 +37,4 @@ service:
       targetPort: 27017
     - name: mongo-telemetry
       port: 28018
-      targetPort: 2018
+      targetPort: 28018
