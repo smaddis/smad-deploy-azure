@@ -33,43 +33,47 @@ module "k8s" {
   k8s_resource_group_name_suffix = var.k8s_resource_group_name_suffix
   project_name                   = local.project_name
   k8s_dns_prefix                 = local.k8s_dns_prefix
-  use_separate_storage_rg        = var.use_separate_storage_rg
-  separate_storage_rg_name       = data.terraform_remote_state.storagestate.outputs.rg_name
-  storage_share_influx           = data.terraform_remote_state.storagestate.outputs.storage_share_influx
-  storage_share_mongo            = data.terraform_remote_state.storagestate.outputs.storage_share_mongo
-  storage_share_kafka            = data.terraform_remote_state.storagestate.outputs.storage_share_kafka
-  storage_share_zookeeper        = data.terraform_remote_state.storagestate.outputs.storage_share_zookeeper
-  storage_acc_name               = data.terraform_remote_state.storagestate.outputs.storage_acc_name
-  storage_acc_key                = data.terraform_remote_state.storagestate.outputs.storage_acc_key
+}
+
+module "persistent_storage" {
+  depends_on               = [module.k8s]
+  source                   = "./modules/persistent_storage"
+  separate_storage_rg_name = data.terraform_remote_state.storagestate.outputs.rg_name
+  storage_share_influx     = data.terraform_remote_state.storagestate.outputs.storage_share_influx
+  storage_share_mongo      = data.terraform_remote_state.storagestate.outputs.storage_share_mongo
+  storage_share_kafka      = data.terraform_remote_state.storagestate.outputs.storage_share_kafka
+  storage_share_zookeeper  = data.terraform_remote_state.storagestate.outputs.storage_share_zookeeper
+  storage_acc_name         = data.terraform_remote_state.storagestate.outputs.storage_acc_name
+  storage_acc_key          = data.terraform_remote_state.storagestate.outputs.storage_acc_key
 }
 
 module "hono" {
-  depends_on       = [module.k8s]
+  depends_on       = [module.persistent_storage]
   source           = "./modules/hono"
   mongodb_username = var.mongodb_username
   mongodb_password = var.mongodb_password
 }
 
 module "influxdb" {
-  depends_on = [module.k8s]
+  depends_on = [module.persistent_storage]
   source     = "./modules/influxdb"
 }
 
 module "mongodb" {
-  depends_on       = [module.k8s]
+  depends_on       = [module.persistent_storage]
   source           = "./modules/mongodb"
   mongodb_username = var.mongodb_username
   mongodb_password = var.mongodb_password
 }
 
 module "kube_prometheus_stack" {
-  depends_on  = [module.k8s]
+  depends_on  = [module.hono]
   source      = "./modules/kube_prometheus_stack"
   domain_name = local.domain_name
 }
 
 module "ambassador" {
-  depends_on     = [module.k8s]
+  depends_on     = [module.persistent_storage]
   source         = "./modules/ambassador"
   k8s_dns_prefix = local.k8s_dns_prefix
 }
@@ -93,7 +97,7 @@ data "kubectl_path_documents" "ambassador_mappings" {
 }
 
 resource "kubectl_manifest" "ambassador_manifest" {
-  depends_on = [module.hono]
+  depends_on = [module.hono, module.ambassador]
   wait       = true
   count      = length(data.kubectl_path_documents.ambassador_mappings.documents)
   yaml_body  = element(data.kubectl_path_documents.ambassador_mappings.documents, count.index)
@@ -108,7 +112,7 @@ data "kubectl_path_documents" "tls_mappings" {
 }
 
 resource "kubectl_manifest" "tls_manifest" {
-  depends_on = [module.hono]
+  depends_on = [module.hono, module.ambassador]
   wait       = true
   count      = length(data.kubectl_path_documents.tls_mappings.documents)
   yaml_body  = element(data.kubectl_path_documents.tls_mappings.documents, count.index)
@@ -191,9 +195,9 @@ provider "kubectl" {
 }
 
 resource "azurerm_role_assignment" "k8s-storage-role-ass" {
-  count                            = var.use_separate_storage_rg ? 1 : 0
   scope                            = data.terraform_remote_state.storagestate.outputs.rg_id
   role_definition_name             = "Owner" # This needs to be changed to a more restrictive role
   principal_id                     = module.k8s.mi_principal_id
   skip_service_principal_aad_check = true
 }
+ 

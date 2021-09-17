@@ -28,7 +28,7 @@ variable "k8s_agent_count" {
 
 # Specify node count for testing purposes
 variable "testing_k8s_agent_count" {
-  default = 2
+  default = 3
   type    = number
 }
 

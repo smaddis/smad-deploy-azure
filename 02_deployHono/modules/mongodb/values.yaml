@@ -1,31 +1,15 @@
-architecture: "standalone"
+architecture: "replicaset"
 persistence:
   enabled: true
-  existingClaim: "mongodb-data"
+  existingClaim: "mongopvc"
 useStatefulSet: true
 metrics:
   enabled: true
 replicaCount: 2
 auth:
-  database: "honodb"
-
-#architecture: "standalone"
-#useStatefulSet: true
-#auth: 
-#  enabled: true
-#  database: "honodb"
-#persistence:
-#  enabled: true
-#  existingClaim: "mongopvc"
-#  storageClass: "azure-disk-retain"
-#  accessModes: "ReadWriteMany"
-#metrics:
-#  enabled: true
-
-# Uncomment these if you want the DB to be externally available. NB! Remember that this 
-# script also has auth credentials, so use external access with caution.
-# 
-# externalAccess:
-#   enabled: true
-# service:
-#   type: "LoadBalancer"
+  database: "telemetry"
+service:
+  port: 28018
+ingress:
+  host:
+    -name: "telemetry"
