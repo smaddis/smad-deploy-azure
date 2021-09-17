@@ -37,10 +37,6 @@ resource "helm_release" "hono" {
     file("${path.module}/values.yaml")
   ]
   set {
-    name  = "kafkaMessagingClusterExample.enabled"
-    value = "true"
-  }
-  set {
     name  = "AmqpMessagingNetworkExample.enabled"
     value = "false"
   }
