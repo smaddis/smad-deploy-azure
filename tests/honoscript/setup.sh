@@ -9,13 +9,13 @@ function die() {
 }
 
 function check_hono_cli() {
-    echo '50d6699fa7893af7bfd3cc86df7e5e5488a255a2fbe35c154b23221f88abf134  hono-cli-1.9.0-exec.jar' | sha256sum -c --status
+    echo '5ce7a8662604dd9ea223042229bdcdf14380fe9be210e70f73b3325e9803e0b2  hono-cli-1.10.0-exec.jar' | sha256sum -c --status
 }
 
 function hono_cli_install() {
     check_hono_cli && return 0
 
-    curl -m $INSTALL_TIME -o hono-cli-1.9.0-exec.jar https://download.eclipse.org/hono/hono-cli-1.9.0-exec.jar || return 1
+    curl -m $INSTALL_TIME -o hono-cli-1.10.0-exec.jar https://download.eclipse.org/hono/hono-cli-1.10.0-exec.jar || return 1
 
     check_hono_cli
 }

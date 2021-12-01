@@ -37,7 +37,7 @@ resource "helm_release" "hono" {
 
   repository      = "https://eclipse.org/packages/charts"
   chart           = "hono"
-  version         = "1.9.8"
+  version         = "1.10.14"
   cleanup_on_fail = "true"
   #depends_on      = [helm_release.mongodb]
   values = [
