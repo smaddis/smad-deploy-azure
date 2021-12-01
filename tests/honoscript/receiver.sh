@@ -9,7 +9,7 @@ KAFKA_PORT=$(jq -r .KAFKA_PORT < $info)
 MY_TENANT=$(jq -r .MY_TENANT < $info)
 KAFKA_TRUSTSTORE_PATH=$(jq -r .KAFKA_TRUSTSTORE_PATH < $info)
 
-java -jar hono-cli-1.9.0-exec.jar \
+java -jar hono-cli-1.10.0-exec.jar \
 --spring.profiles.active=receiver,local,kafka \
 --tenant.id=$MY_TENANT \
 --hono.kafka.commonClientConfig.bootstrap.servers=${DOMAIN_NAME}:${KAFKA_PORT} \
