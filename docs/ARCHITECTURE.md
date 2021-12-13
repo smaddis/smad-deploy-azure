@@ -6,7 +6,6 @@ This is a architectural description of the smad-deploy-azure
 |------|----------|-------|
 |[./00_tfstate_storage](#Terraform-state-module)|Creates resource group for terraform state file|
 |[./01_storage_rg](#Storage-resource-group)|Creates separate resource group for persistent data needs|
-|[./02_container_registry](#Contrainer-registry-module)| Creates ACR for k8s cluster. **Currently not used**|
 |[./02_deployHono](#Hono-service-stack-module)| Creates Hono k8s cluster and services
 |.02_deployHono/modules|Modules used by the script. |
 |[.../k8s](#Kubernetes-deployment-module)|Module for  creating kubernetes cluster to Azure (AKS)
@@ -14,11 +13,11 @@ This is a architectural description of the smad-deploy-azure
 |[.../hono](#Hono-deployment-module)|Handles deployment of Hono via Helm to k8s cluster | k8s
 |[../influxdb](#Influxdb-module)|Module that handles deployment of Influxdb to k8s cluster. Holds all the information to set up database for prometheus metrics | k8s
 |[.../jaeger](#Jaeger-deployment-module)|Handles deployment of Jaeger via Helm to k8s cluster | k8s
+|[.../kafka](#Kafka-deployment-module)|Handles deployment of Kafka cluster via Helm to k8s cluster | k8s
 |[.../kube_prometheus_stack](#kube-prometheus-stack-deployment-module)|Handles deployment of kube-prometheus-stack via Helm to k8s cluster. | k8s
 |[.../mongodb](#Mongo-deployment-module)|Handles deployment of MongoDB via Helm to k8s cluster. | k8s
-
-
-Every module follows the conventional Terraform naming scheme, and therefore has `main.tf`, `variables.tf` and `outputs.tf` files.
+|[.../persistent_storage](#Data-persistency-module)|Deploys persistent volumes and persistent volume claims. | k8s
+|[./03_container_registry](#Contrainer-registry-module)| Creates ACR for k8s cluster. **Currently not used**|
 
 ## Description
 
@@ -37,7 +36,7 @@ Hold variables for naming resources created by this module.
 
 Output values four resource group, storage account and storate container.
 
-## Storage resource group module
+## Storage resource group
 
 This modules creates separate resource group for persistent volume claim.
 
@@ -50,23 +49,6 @@ Establish azurerm backend with previously set naming for tfstate files, and crea
 ### `outputs.tf`
 
 Output value of created resource group's id.
-
-## Contrainer registry module
-
-**NOT USED**
-
-### `main.tf`
-
-Creates Azure Container registry in the same resource group as k8s modules.
-
-Assigns acrpull role for k8s cluster
-### `variables.tf`
-
-Variables for naming resources.
-
-### `outputs.tf`
-
-Output values for ACR. Containing id, login url, username and password.
 
 
 ## Hono service stack module
@@ -109,6 +91,8 @@ Adds helm charts that bootstrap an Ambassador deployment on the k8s cluster usin
 #### `module "jaeger"`
 Adds helm charts that bootstrap a Jaeger deployment on the k8s cluster using the Helm package manager.
 
+#### `module "kafka"`
+Adds helm charts that bootstrap a Kafka cluster on the k8s cluster using the Helm package manager.
 
 ### `variables.tf`
 
@@ -297,3 +281,20 @@ Deploys jaeger-operator, and is configured with values from `jaeger_values.yaml`
 ### `values.yaml`
 
 Jaeger is enabled with simple metadata.
+
+## Contrainer registry module
+
+**NOT USED**
+
+### `main.tf`
+
+Creates Azure Container registry in the same resource group as k8s modules.
+
+Assigns acrpull role for k8s cluster
+### `variables.tf`
+
+Variables for naming resources.
+
+### `outputs.tf`
+
+Output values for ACR. Containing id, login url, username and password.

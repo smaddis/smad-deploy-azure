@@ -52,10 +52,38 @@ To change your selected subscription
 $ az account set -s <$SUBSCRIPTION_ID_OR_NAME>
 ```
 
+# Cloud deployment
+
+Cloud deployment has four phases. These phases are represented as modules:
+00_tfstate_storage
+01_storage_rg
+02_deployHono
+03_container_registry *Currently not in use*
+
+### Initialising modules
+
+Modules that are in use need to be initialised before use with
+```
+$ terraform init
+```
+You need to be in the same directory as the module or use
+```
+$ terraform -chdir=[MODULE NAME] init 
+```
+ie.
+```
+$ terraform -chdir=00_tfstate_storage init 
+```
+#### Important
+Note that when running "$ terraform -chdir=[MODULE NAME]" default workspace is used. Do not use default workspace for modules other than 00_tfstate_storage. 
+
+Use same workspace name when deploying 01_storage_rg and 02_deployHono.
+See more about workspaces below.
+
 # 0. Create a storage account to store shared state for Terraform
 [Shared state](https://www.terraform.io/docs/language/state/remote.html) should always be preferred when working with Terraform.
 
-In order to create one run 
+In order to create one run after initializing 00_tfstate_storage module
 ```
 $ terraform apply './00_tfstate_storage'
 ```
@@ -111,7 +139,8 @@ Run
 ```
 $ terraform apply -var=use_separate_storage_rg=true
 ``` 
-to set a variable named 'use_separate_storage_rg' to have value 'true' via command line. With this variable set as 'true', you effectively switch the K8S cluster to use a separate resource group for storage.
+to set a variable named 'use_separate_storage_rg' to have value 'true' via command line. With this variable set as 'true', you effectively switch the K8S cluster to use a separate resource group for storage. 
+
 
 ### Terraform plan
 
@@ -125,7 +154,7 @@ Ensure that you have created proper Terraform state resources to Azure with [00_
 
 ## 1. Create separate resource group
 
-Create separate resource group for databases. Be sure to use the same workspace as when deploying the main service stack
+Create separate resource group for storing data. Be sure to use the same workspace as when deploying the main service stack
 
 ```
 $ terraform apply ./01_storage_rg
@@ -167,6 +196,7 @@ Similarly, when running `terraform apply -target`, if resources that are needed 
 
 [`tests/honoscript`](../tests/honoscript) folder has a shell script that can be used to quickly verify that Hono is running properly. Refer to [`tests/honoscript/README.md`](../tests/honoscript/README.md) for more detailed instructions.
 
+<!--
 # Known issues
 
 ## Delays with Hono resource deletion
@@ -177,12 +207,12 @@ Workarounds:
 - Wait around 30-60 minutes before deploying Hono again.
 - Destroy the whole cluster (effectively the whole stack) and deploy it again (may be faster than the first option but you may lose some persistent data if not using the separate storage resource group).
 
-## Storage persistence
+ ## Storage persistence
 
 If the whole service stack is destroyed and variable `use_separate_storage_rg` is `false` all peristent volumes will also be destroyed. This can be prevented by setting `use_separate_storage_rg` to `true`: when the service stack is destroyed, the persistent volumes will remain in the separate resource group. Currently this has some drawbacks: when the service stack is deployed again, the script will create a new persistent volume and data from the old persistent volume must be restored manually.
 
 Workarounds:
-- No workarounds currently.
+- No workarounds currently. 
 
 ## Separate storage resource group access delay
 
@@ -190,4 +220,4 @@ If the separate resource group for storage is used, a role will be created that 
 
 Workarounds:
 - Run `$ terraform apply` again until the deployment succeeds.
-
+-->
