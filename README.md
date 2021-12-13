@@ -21,29 +21,46 @@ Architectural description of the codebase can be found at [ARCHITECTURE.md](./do
 
 ## Usage
 
-1. Create Terraform State storage group and account to Azure
+### 1. Create Terraform State storage group and account to Azure
+
 ```bash
+$ terraform -chdir=00_tfstate_storage init 
 $ terraform apply ./00_tfstate_storage
 ```
-### No separate storage resource group (default)
 
-2. Remember to edit `main.tf` email variable to a real one for TLS certificate
-2. Deploy main service stack
+### 2. Create separate resource group for persistent data
 
 ```bash
-$ terraform apply ./
+$ cd 01_storage_rg
+$ terraform init
+```
+2. Create a Terraform workspace
+
+```bash
+$ terraform workspace new [WORKSPACE NAME]
 ```
 
-### OPTIONAL: Separate resource group
+2. Deploy persistent data file shares
 
-2. Create separate resource group for databases
-```
+```bash
+$ cd ../
 $ terraform apply ./01_storage_rg
 ```
 
-3. Deploy main service stack
+### 3. Deploy main service stack
+
+Remember to edit `main.tf` email variable to a real one for TLS certificate
+
+```bash
+$ cd 02_deployHono
+$ terraform init
 ```
-$ terraform apply ./02_deployHono
+
+Create a Terraform workspace. Important: Use same workspace name as before in 01_storage_rg!
+
+```bash
+$ terraform workspace new [WORKSPACE NAME]
+$ terraform apply
 ```
 
 ## After deployment
