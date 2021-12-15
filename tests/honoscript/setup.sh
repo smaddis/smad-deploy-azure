@@ -32,8 +32,8 @@ DNS_LABEL=$(timeout $TIME kubectl get service ambassador -o json | jq -r .metada
 MQTT_PORT=1883
 MQTT_SECURE_PORT=8883
 KAFKA_PORT=9092
-KAFKA_TRUSTSTORE_PATH=./truststore.jks
-kubectl get secrets hono-kafka-jks --template="{{index .data \"kafka.truststore.jks\" | base64decode}}" -n default > $KAFKA_TRUSTSTORE_PATH
+#KAFKA_TRUSTSTORE_PATH=./truststore.jks
+#kubectl get secrets hono-kafka-jks --template="{{index .data \"kafka.truststore.jks\" | base64decode}}" -n default > $KAFKA_TRUSTSTORE_PATH
 
 DOMAIN_NAME=${DNS_LABEL}".westeurope.cloudapp.azure.com"
 

@@ -40,7 +40,7 @@ metadata:
 spec:
   port: 9092
   #host: ${domain}
-  service: hono-kafka-0-external:9092
+  service: kafka-0-external:9092
 ---
 apiVersion: getambassador.io/v2
 kind:  Mapping
