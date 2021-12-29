@@ -21,7 +21,10 @@ adapters:
     enabled: false
   kafkaMessagingSpec:
     commonClientConfig:
-      bootstrap.servers: kafka-0.kafka-headless.default.svc.cluster.local:9094
+      bootstrap.servers: kafka-0.kafka-headless.default.svc.cluster.local:9092
+      security.protocol: SASL_PLAINTEXT
+      sasl.mechanism: SCRAM-SHA-512
+      sasl.jaas.config: "org.apache.kafka.common.security.scram.ScramLoginModule required username=\"hono\" password=\"hono-secret\";"
 messagingNetworkTypes:
   - kafka
 kafkaMessagingClusterExample:
