@@ -48,7 +48,7 @@ module "persistent_storage" {
 }
 
 module "kafka" {
-  depends_on = [module.persistent_storage]
+  depends_on = [module.persistent_storage, module.mongodb]
   source     = "./modules/kafka"
 }
 
@@ -85,6 +85,9 @@ module "ambassador" {
 module "jaeger" {
   depends_on = [module.k8s]
   source     = "./modules/jaeger"
+}
+module "cert_manager" {
+  source     = "./modules/cert_manager"
 }
 
 ###########################################
