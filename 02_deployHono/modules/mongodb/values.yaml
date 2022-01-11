@@ -12,4 +12,4 @@ service:
   port: 28018
 ingress:
   host:
-    -name: "mongo-telemetry"
+    - name: "mongo-telemetry"
