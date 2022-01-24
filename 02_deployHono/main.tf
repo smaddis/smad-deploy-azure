@@ -3,7 +3,7 @@ locals {
   k8s_agent_count = terraform.workspace == "default" ? var.k8s_agent_count : var.testing_k8s_agent_count
   k8s_dns_prefix  = terraform.workspace == "default" ? var.k8s_dns_prefix : "${terraform.workspace}-${var.k8s_dns_prefix}"
   domain_name     = format("%s.westeurope.cloudapp.azure.com", local.k8s_dns_prefix)
-  email           = "email@example.com"
+  email           = "lunden.niina@gmail.com"
 }
 
 data "terraform_remote_state" "storagestate" {
