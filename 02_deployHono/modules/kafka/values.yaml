@@ -1,3 +1,5 @@
+volumePermissions:
+  enabled: true
 livenessProbe:
   initialDelaySeconds: 700
 readinessProbe:
@@ -43,11 +45,14 @@ auth:
   clientProtocol: sasl
   interBrokerProtocol: sasl
   sasl:
+    mechanism: "scram-sha-512"
     jaas:
       clientUsers:
         - "hono"
+        - "connect"
       clientPasswords:
         - "hono-secret"
+        - "connect"
       zookeeperUser: zookeeperUser
       zookeeperPassword: zookeeperPassword
 
@@ -121,9 +126,9 @@ extraDeploy:
           username="hono" \
           password="hono-secret";
       mongodb.properties: |-
-        connection.uri=mongodb://hono:hono-secret@mongodb.default.svc.cluster.local:28018/mongo-telemetry
-        name=mongo-sink
-        topics=.
+        connection.uri=mongodb://root:connect@mongodb.default.svc.cluster.local:28018/?authSource=admin
+        name="mongo-telemetry"
+        topics=mytopic
         connector.class=com.mongodb.kafka.connect.MongoSinkConnector
         tasks.max=1
         key.converter=org.apache.kafka.connect.json.JsonConverter
