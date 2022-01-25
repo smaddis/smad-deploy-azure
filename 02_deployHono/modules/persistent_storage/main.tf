@@ -124,6 +124,12 @@ resource "kubernetes_persistent_volume" "mongo_volume" {
     access_modes                     = ["ReadWriteMany"]
     storage_class_name               = kubernetes_storage_class.azure_file_retain.metadata.0.name
     persistent_volume_reclaim_policy = "Retain"
+    mount_options = ["dir_mode=0777",
+      "file_mode=0777",
+      "uid=1001",
+      "gid=1001",
+      "mfsymlinks",
+    "nobrl"]
     persistent_volume_source {
       azure_file {
         secret_name = kubernetes_secret.storage_secret.metadata.0.name

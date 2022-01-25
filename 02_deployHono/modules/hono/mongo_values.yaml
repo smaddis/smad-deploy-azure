@@ -1,12 +1,20 @@
 architecture: "standalone"
 persistence:
-  existingClaim: "mongodb-data"
-useStatefulSet: true
+  enabled: true
+  existingClaim: "mongopvc"
+  mountPath: /bitnami/mongodb
+  subPath: device-reg
+  accessModes: "ReadWriteMany"
+#useStatefulSet: true
 metrics:
   enabled: true
-replicaCount: 2
 auth:
   database: "honodb"
+volumePermissions:
+  enabled: true
+service:
+  nameOverride: "mongodb-devicereg"
+  port: 27017
 
 #architecture: "standalone"
 #useStatefulSet: true

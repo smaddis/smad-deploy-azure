@@ -1,7 +1,7 @@
 architecture: "replicaset"
 persistence:
-  enabled: true
-  existingClaim: "mongopvc"
+  enabled: false
+#  existingClaim: "mongopvc"
 useStatefulSet: true
 metrics:
   enabled: true

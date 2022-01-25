@@ -2,7 +2,7 @@ livenessProbe:
   initialDelaySeconds: 700
 readinessProbe:
   initialDelaySeconds: 20
-logsDirs: /bitnami/kafka/data1
+logsDirs: /bitnami/kafka/data
 persistence:
   existingClaim: "kafkapvc"
   size: 5Gi
