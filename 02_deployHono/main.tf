@@ -87,6 +87,7 @@ module "jaeger" {
   source     = "./modules/jaeger"
 }
 module "cert_manager" {
+  depends_on = [module.ambassador, module.hono]
   source     = "./modules/cert_manager"
 }
 
@@ -105,7 +106,7 @@ data "kubectl_path_documents" "ambassador_mappings" {
 }
 
 resource "kubectl_manifest" "ambassador_manifest" {
-  depends_on = [module.hono, module.ambassador]
+  depends_on = [module.hono, module.ambassador, module.cert_manager]
   wait       = true
   count      = length(data.kubectl_path_documents.ambassador_mappings.documents)
   yaml_body  = element(data.kubectl_path_documents.ambassador_mappings.documents, count.index)
@@ -120,7 +121,7 @@ data "kubectl_path_documents" "tls_mappings" {
 }
 
 resource "kubectl_manifest" "tls_manifest" {
-  depends_on = [module.hono, module.ambassador]
+  depends_on = [module.hono, module.ambassador, module.cert_manager]
   wait       = true
   count      = length(data.kubectl_path_documents.tls_mappings.documents)
   yaml_body  = element(data.kubectl_path_documents.tls_mappings.documents, count.index)
