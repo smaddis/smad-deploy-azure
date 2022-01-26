@@ -1,6 +1,6 @@
 #!/bin/bash
 
-declare -i  TIME=5
+declare -i  TIME=20
 declare -i  INSTALL_TIME=200
 
 function die() {
@@ -39,7 +39,7 @@ DOMAIN_NAME=${DNS_LABEL}".westeurope.cloudapp.azure.com"
 
 MY_TENANT=$(curl -m $TIME -X POST -H "content-type: application/json" https://${DOMAIN_NAME}/registry/v1/tenants --data-binary '{
   "ext": {
-    "messaging-type": "kafka"
+    "messaging-type": "kafka" 
   }
 }' 2> /dev/null | jq -r .id )
 : ${MY_TENANT:?'Your tenant has moved out. Could not set MY_TENANT'}

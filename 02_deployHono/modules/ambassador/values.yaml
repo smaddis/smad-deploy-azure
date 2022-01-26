@@ -18,7 +18,7 @@ service:
       port: 28080
       targetPort: 28080
     - name: dispatch-router
-      port: 5671
+      port: 15671
       targetPort: 15671
     - name: grafana
       port: 3000
@@ -35,6 +35,3 @@ service:
     - name: mongodb
       port: 27017
       targetPort: 27017
-    - name: mongo-telemetry
-      port: 28018
-      targetPort: 28018
