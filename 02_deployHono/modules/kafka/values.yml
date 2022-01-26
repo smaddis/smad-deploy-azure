@@ -3,11 +3,8 @@ volumePermissions:
 livenessProbe:
   initialDelaySeconds: 700
 readinessProbe:
-  initialDelaySeconds: 200
-logsDirs: /bitnami/kafka/data2
-logFlushIntervalMs: 500
-logRetentionCheckIntervalMs: 30000
-logRetentionHours: 2
+  initialDelaySeconds: 20
+logsDirs: /bitnami/kafka/data1
 persistence:
   existingClaim: "kafkapvc"
   size: 5Gi
@@ -22,11 +19,10 @@ zookeeper:
     serverUsers: zookeeperUser
     serverPasswords: zookeeperPassword
 externalAccess:
-  enabled: false
+  enabled: true
   service:
     type: LoadBalancer
-    ports:
-      external: 9094
+    port: 9092
     nodePorts:
       - 32092
   autoDiscovery:
@@ -37,10 +33,7 @@ rbac:
   create: true
 nameOverride: kafka
 service:
-  ports:
-    client: 9092
-    internal: 9093
-    external: 9094
+  port: 9094
 auth:
   clientProtocol: sasl
   interBrokerProtocol: sasl
@@ -55,23 +48,21 @@ auth:
         - "connect"
       zookeeperUser: zookeeperUser
       zookeeperPassword: zookeeperPassword
-
-extraDeploy:
-  - |
-    apiVersion: apps/v1
+extraDeploy: |-
+  - apiVersion: apps/v1
     kind: Deployment
     metadata:
-      name: kafka-connect
-      labels: {{- include "common.labels.standard" . | nindent 4 }}
+      name: {{ include "kafka.fullname" . }}-connect
+      labels: {{- include "kafka.labels" . | nindent 6 }}
         app.kubernetes.io/component: connector
     spec:
       replicas: 1
       selector:
-        matchLabels: {{- include "common.labels.matchLabels" . | nindent 6 }}
+        matchLabels: {{- include "kafka.matchLabels" . | nindent 8 }}
           app.kubernetes.io/component: connector
       template:
         metadata:
-          labels: {{- include "common.labels.standard" . | nindent 8 }}
+          labels: {{- include "kafka.labels" . | nindent 10 }}
             app.kubernetes.io/component: connector
         spec:
           containers:
@@ -82,27 +73,26 @@ extraDeploy:
                 - /bin/bash
                 - -ec
                 - |
-                  /opt/bitnami/kafka/bin/connect-standalone.sh /opt/bitnami/kafka/config/connect-standalone.properties /opt/bitnami/kafka/config/mongodb.properties
+                  /opt/bitnami/kafka/bin/connect-standalone.sh /config/connect-standalone.properties /config/mongodb.properties
               ports:
                 - name: connector
                   containerPort: 8083
               volumeMounts:
                 - name: configuration
-                  mountPath: /bitnami/kafka/config
+                  mountPath: /config
           volumes:
             - name: configuration
               configMap:
-                name: kafka-connect
-  - |
-    apiVersion: v1
+                name: {{ include "kafka.fullname" . }}-connect
+  - apiVersion: v1
     kind: ConfigMap
     metadata:
-      name: kafka-connect
-      labels: {{- include "common.labels.standard" . | nindent 4 }}
+      name: {{ include "kafka.fullname" . }}-connect
+      labels: {{- include "kafka.labels" . | nindent 6 }}
         app.kubernetes.io/component: connector
     data:
       connect-standalone.properties: |-
-        bootstrap.servers=kafka-0.kafka-headless.default.svc.cluster.local:{{ .Values.service.port }}
+        bootstrap.servers = {{ include "kafka.fullname" . }}-0.{{ include "kafka.fullname" . }}-headless.{{ .Release.Namespace }}.svc.{{ .Values.clusterDomain }}:{{ .Values.service.port }}
         key.converter=org.apache.kafka.connect.json.JsonConverter
         value.converter=org.apache.kafka.connect.json.JsonConverter
         key.converter.schemas.enable=true
@@ -113,21 +103,16 @@ extraDeploy:
         sasl.mechanism=PLAIN
         security.protocol=SASL_PLAINTEXT
         sasl.jaas.config=org.apache.kafka.common.security.plain.PlainLoginModule required \
-          username="hono" \
-          password="hono-secret";
+          username="connect" \
+          password="conect";
         consumer.sasl.mechanism=PLAIN
         consumer.security.protocol=SASL_PLAINTEXT
         consumer.sasl.jaas.config=org.apache.kafka.common.security.plain.PlainLoginModule required \
-          username="hono" \
-          password="hono-secret";
-        producer.sasl.mechanism=PLAIN
-        producer.security.protocol=SASL_PLAINTEXT
-        producer.sasl.jaas.config=org.apache.kafka.common.security.plain.PlainLoginModule required \
-          username="hono" \
-          password="hono-secret";
+          username="connect" \
+          password="conect";
       mongodb.properties: |-
-        connection.uri=mongodb://user:"root-secret"@mongodb.default.svc.cluster.local:27017
-        name="mongodb"
+        connection.uri=mongodb://honouser:hono-secret@mongodb.default.svc.cluster.local:27017/mydb
+        name=mongo-sink
         topics=mytopic
         connector.class=com.mongodb.kafka.connect.MongoSinkConnector
         tasks.max=1
@@ -137,17 +122,29 @@ extraDeploy:
         value.converter.schemas.enable=false
         database=mydb
         collection=sink
-  - |
-    apiVersion: v1
+  - apiVersion: v1
     kind: Service
     metadata:
-      name: kafka-connect
-      labels: {{- include "common.labels.standard" . | nindent 4 }}
+      name: {{ include "kafka.fullname" . }}-connect
+      labels: {{- include "kafka.labels" . | nindent 6 }}
         app.kubernetes.io/component: connector
     spec:
       ports:
         - protocol: TCP
           port: 8083
           targetPort: connector
-      selector: {{- include "common.labels.matchLabels" . | nindent 4 }}
+      selector: {{- include "kafka.matchLabels" . | nindent 6 }}
         app.kubernetes.io/component: connector
+
+
+
+
+        listeners: 
+  - INTERNAL://localhost:9093
+  - CLIENT://kafka-0.kafka-headless.default.svc.cluster.local:9094
+  - EXTERNAL://kafka-0.kafka-headless.default.svc.cluster.local:29092
+advertisedListeners: 
+  - INTERNAL://localhost:9093
+  - CLIENT://kafka-0.kafka-headless.default.svc.cluster.local:9094
+  - EXTERNAL://20.82.43.249:9092
+interBrokerListenerName: EXTERNAL

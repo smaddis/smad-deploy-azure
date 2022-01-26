@@ -53,10 +53,8 @@ module "kafka" {
 }
 
 module "hono" {
-  depends_on       = [module.persistent_storage, module.kafka]
-  source           = "./modules/hono"
-  mongodb_username = var.mongodb_username
-  mongodb_password = var.mongodb_password
+  depends_on = [module.persistent_storage, module.mongodb, module.kafka]
+  source     = "./modules/hono"
 }
 
 module "influxdb" {
@@ -65,10 +63,8 @@ module "influxdb" {
 }
 
 module "mongodb" {
-  depends_on       = [module.persistent_storage]
-  source           = "./modules/mongodb"
-  mongodb_username = var.mongodb_username
-  mongodb_password = var.mongodb_password
+  depends_on = [module.persistent_storage]
+  source     = "./modules/mongodb"
 }
 
 module "kube_prometheus_stack" {

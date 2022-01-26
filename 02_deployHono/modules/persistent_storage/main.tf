@@ -177,32 +177,3 @@ resource "kubernetes_persistent_volume" "zookeeper_volume" {
     }
   }
 }
-
-resource "kubernetes_storage_class" "azure-disk-retain" {
-  metadata {
-    name = "azure-disk-retain"
-  }
-  storage_provisioner = "kubernetes.io/azure-disk"
-  reclaim_policy      = "Retain"
-  volume_binding_mode = "Immediate"
-  parameters = {
-    kind        = "managed"
-    cachingMode = "ReadOnly"
-    #  resourceGroup = var.use_separate_storage_rg ? "storage-resource-group" : null
-  } # implicitly create storage class in the same RG as K8S cluster if false ^^^
-}
-
-resource "kubernetes_persistent_volume_claim" "mongodb-data" {
-  metadata {
-    name = "mongodb-data"
-  }
-  spec {
-    access_modes = ["ReadWriteOnce"]
-    resources {
-      requests = {
-        storage = "8Gi"
-      }
-    }
-    storage_class_name = "azure-disk-retain"
-  }
-}

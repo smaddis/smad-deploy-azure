@@ -31,12 +31,12 @@ metadata:
   name: hono-dispatch-router
 spec:
   port: 15671
-  service: hono-service-device-registry-ext:15671
+  service: hono-service-dispatch-router-ext:15671
 ---
 apiVersion: getambassador.io/v2
 kind:  TCPMapping
 metadata:
-  name: hono-kafka-external
+  name: kafka
 spec:
   port: 9092
   #host: ${domain}
