@@ -9,13 +9,16 @@ grafana:
 mongodb:
   createInstance: false
 deviceRegistryExample:
-  type: "mongodb"
+  enabled: true
+  type: mongodb
   addExampleData: false
   mongoDBBasedDeviceRegistry:
     mongodb:
       host: "mongodb-devicereg"
       port: 27017
       dbName: "honodb"
+      username: "honouser"
+      password: "hono-secret"
 adapters:
   http:
     enabled: false
