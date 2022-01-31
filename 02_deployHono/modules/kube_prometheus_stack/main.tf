@@ -27,7 +27,7 @@ resource "helm_release" "kube-prometheus-stack" {
 
   repository      = "https://prometheus-community.github.io/helm-charts"
   chart           = "kube-prometheus-stack"
-  version         = "~> 14.5.0"
+  version         = "~> 30.2.0"
   depends_on      = [kubernetes_secret.grafana_hono_dashboards]
   cleanup_on_fail = "true"
   values = [
