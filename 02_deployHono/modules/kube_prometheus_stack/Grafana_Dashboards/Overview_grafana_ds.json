@@ -45,7 +45,6 @@
       "id": 8,
       "links": [],
       "mode": "html",
-      "options": {},
       "title": "",
       "transparent": true,
       "type": "text"
@@ -61,7 +60,6 @@
       "id": 12,
       "links": [],
       "mode": "html",
-      "options": {},
       "title": "",
       "transparent": true,
       "type": "text"
@@ -77,7 +75,6 @@
       "id": 15,
       "links": [],
       "mode": "html",
-      "options": {},
       "title": "",
       "transparent": true,
       "type": "text"
@@ -90,7 +87,6 @@
       "datasource": "Prometheus",
       "description": "average rate of telemetry messages received from devices",
       "fill": 1,
-      "fillGradient": 0,
       "gridPos": {
         "h": 8,
         "w": 8,
@@ -111,15 +107,17 @@
       "linewidth": 1,
       "links": [
         {
+          "dashboard": "Message details",
+          "includeVars": true,
+          "keepTime": true,
+          "params": "var-type=telemetry",
           "targetBlank": true,
           "title": "Message details",
-          "url": "/d/rcEOBABmk/message-details?$__url_time_range&$__all_variables&var-type=telemetry"
+          "type": "dashboard",
+          "url": "/d/rcEOBABmk/message-details"
         }
       ],
       "nullPointMode": "null",
-      "options": {
-        "dataLinks": []
-      },
       "percentage": false,
       "pointradius": 5,
       "points": false,
@@ -141,21 +139,21 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(irate(hono_messages_received_seconds_count{type=\"telemetry\",status=\"unprocessable\"}[$__range]))",
+          "expr": "sum(irate(hono_messages_received_seconds_count{type=\"telemetry\",status=\"unprocessable\"}[$__rate_interval]))",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "unprocessable",
           "refId": "C"
         },
         {
-          "expr": "sum(irate(hono_messages_received_seconds_count{type=\"telemetry\",status=\"undeliverable\"}[$__range]))",
+          "expr": "sum(irate(hono_messages_received_seconds_count{type=\"telemetry\",status=\"undeliverable\"}[$__rate_interval]))",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "undeliverable",
           "refId": "B"
         },
         {
-          "expr": "sum(irate(hono_messages_received_seconds_count{type=\"telemetry\",status=\"forwarded\"}[$__range]))",
+          "expr": "sum(irate(hono_messages_received_seconds_count{type=\"telemetry\",status=\"forwarded\"}[$__rate_interval]))",
           "format": "time_series",
           "instant": false,
           "intervalFactor": 1,
@@ -165,7 +163,6 @@
       ],
       "thresholds": [],
       "timeFrom": null,
-      "timeRegions": [],
       "timeShift": null,
       "title": "messages",
       "tooltip": {
@@ -173,6 +170,7 @@
         "sort": 0,
         "value_type": "individual"
       },
+      "transparent": false,
       "type": "graph",
       "xaxis": {
         "buckets": null,
@@ -213,7 +211,6 @@
       "datasource": "Prometheus",
       "description": "average rate of events received from devices",
       "fill": 1,
-      "fillGradient": 0,
       "gridPos": {
         "h": 8,
         "w": 8,
@@ -234,15 +231,17 @@
       "linewidth": 1,
       "links": [
         {
+          "dashboard": "Message details",
+          "includeVars": true,
+          "keepTime": true,
+          "params": "type=event",
           "targetBlank": true,
           "title": "Message details",
-          "url": "/d/rcEOBABmk/message-details?$__url_time_range&$__all_variables&type=event"
+          "type": "dashboard",
+          "url": "/d/rcEOBABmk/message-details"
         }
       ],
       "nullPointMode": "null",
-      "options": {
-        "dataLinks": []
-      },
       "percentage": false,
       "pointradius": 5,
       "points": false,
@@ -264,21 +263,21 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(irate(hono_messages_received_seconds_count{type=\"event\",status=\"unprocessable\"}[$__range]))",
+          "expr": "sum(irate(hono_messages_received_seconds_count{type=\"event\",status=\"unprocessable\"}[$__rate_interval]))",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "unprocessable",
           "refId": "C"
         },
         {
-          "expr": "sum(irate(hono_messages_received_seconds_count{type=\"event\",status=\"undeliverable\"}[$__range]))",
+          "expr": "sum(irate(hono_messages_received_seconds_count{type=\"event\",status=\"undeliverable\"}[$__rate_interval]))",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "undeliverable",
           "refId": "B"
         },
         {
-          "expr": "sum(irate(hono_messages_received_seconds_count{type=\"event\",status=\"forwarded\"}[$__range]))",
+          "expr": "sum(irate(hono_messages_received_seconds_count{type=\"event\",status=\"forwarded\"}[$__rate_interval]))",
           "format": "time_series",
           "instant": false,
           "intervalFactor": 1,
@@ -288,7 +287,6 @@
       ],
       "thresholds": [],
       "timeFrom": null,
-      "timeRegions": [],
       "timeShift": null,
       "title": "messages",
       "tooltip": {
@@ -296,6 +294,7 @@
         "sort": 0,
         "value_type": "individual"
       },
+      "transparent": false,
       "type": "graph",
       "xaxis": {
         "buckets": null,
@@ -336,7 +335,6 @@
       "datasource": "Prometheus",
       "description": "average rate of commands sent to devices",
       "fill": 1,
-      "fillGradient": 0,
       "gridPos": {
         "h": 8,
         "w": 8,
@@ -359,9 +357,6 @@
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
-      "options": {
-        "dataLinks": []
-      },
       "percentage": false,
       "pointradius": 5,
       "points": false,
@@ -372,7 +367,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(irate(hono_commands_received_seconds_count{direction=~\"one-way|request\",status=\"unprocessable\"}[$__range]))",
+          "expr": "sum(irate(hono_commands_received_seconds_count{direction=~\"one-way|request\",status=\"unprocessable\"}[$__rate_interval]))",
           "format": "time_series",
           "interval": "",
           "intervalFactor": 1,
@@ -380,7 +375,7 @@
           "refId": "C"
         },
         {
-          "expr": "sum(irate(hono_commands_received_seconds_count{direction=~\"one-way|request\",status=\"undeliverable\"}[$__range]))",
+          "expr": "sum(irate(hono_commands_received_seconds_count{direction=~\"one-way|request\",status=\"undeliverable\"}[$__rate_interval]))",
           "format": "time_series",
           "hide": false,
           "interval": "",
@@ -389,7 +384,7 @@
           "refId": "B"
         },
         {
-          "expr": "sum(irate(hono_commands_received_seconds_count{direction=~\"one-way|request\",status=\"forwarded\"}[$__range]))",
+          "expr": "sum(irate(hono_commands_received_seconds_count{direction=~\"one-way|request\",status=\"forwarded\"}[$__rate_interval]))",
           "format": "time_series",
           "instant": false,
           "intervalFactor": 1,
@@ -399,7 +394,6 @@
       ],
       "thresholds": [],
       "timeFrom": null,
-      "timeRegions": [],
       "timeShift": null,
       "title": "messages",
       "tooltip": {
@@ -407,6 +401,7 @@
         "sort": 0,
         "value_type": "individual"
       },
+      "transparent": false,
       "type": "graph",
       "xaxis": {
         "buckets": null,
@@ -448,7 +443,6 @@
       "datasource": "Prometheus",
       "description": "average rate of data received from devices as payload of telemetry messages",
       "fill": 1,
-      "fillGradient": 0,
       "gridPos": {
         "h": 8,
         "w": 8,
@@ -469,9 +463,6 @@
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
-      "options": {
-        "dataLinks": []
-      },
       "percentage": false,
       "pointradius": 5,
       "points": false,
@@ -482,21 +473,21 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(irate(hono_messages_payload_bytes_sum{type=\"telemetry\",status=\"unprocessable\"}[$__range]))",
+          "expr": "sum(irate(hono_messages_payload_bytes_sum{type=\"telemetry\",status=\"unprocessable\"}[$__rate_interval]))",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "unprocessable",
           "refId": "C"
         },
         {
-          "expr": "sum(irate(hono_messages_payload_bytes_sum{type=\"telemetry\",status=\"undeliverable\"}[$__range]))",
+          "expr": "sum(irate(hono_messages_payload_bytes_sum{type=\"telemetry\",status=\"undeliverable\"}[$__rate_interval]))",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "undeliverable",
           "refId": "B"
         },
         {
-          "expr": "sum(irate(hono_messages_payload_bytes_sum{type=\"telemetry\",status=\"forwarded\"}[$__range]))",
+          "expr": "sum(irate(hono_messages_payload_bytes_sum{type=\"telemetry\",status=\"forwarded\"}[$__rate_interval]))",
           "format": "time_series",
           "instant": false,
           "intervalFactor": 1,
@@ -506,7 +497,6 @@
       ],
       "thresholds": [],
       "timeFrom": null,
-      "timeRegions": [],
       "timeShift": null,
       "title": "payload",
       "tooltip": {
@@ -514,6 +504,7 @@
         "sort": 0,
         "value_type": "individual"
       },
+      "transparent": false,
       "type": "graph",
       "xaxis": {
         "buckets": null,
@@ -554,7 +545,6 @@
       "datasource": "Prometheus",
       "description": "average rate of data received from devices as payload of events",
       "fill": 1,
-      "fillGradient": 0,
       "gridPos": {
         "h": 8,
         "w": 8,
@@ -575,9 +565,6 @@
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
-      "options": {
-        "dataLinks": []
-      },
       "percentage": false,
       "pointradius": 5,
       "points": false,
@@ -588,21 +575,21 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(irate(hono_messages_payload_bytes_sum{type=\"event\",status=\"unprocessable\"}[$__range]))",
+          "expr": "sum(irate(hono_messages_payload_bytes_sum{type=\"event\",status=\"unprocessable\"}[$__rate_interval]))",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "unprocessable",
           "refId": "C"
         },
         {
-          "expr": "sum(irate(hono_messages_payload_bytes_sum{type=\"event\",status=\"undeliverable\"}[$__range]))",
+          "expr": "sum(irate(hono_messages_payload_bytes_sum{type=\"event\",status=\"undeliverable\"}[$__rate_interval]))",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "undeliverable",
           "refId": "B"
         },
         {
-          "expr": "sum(irate(hono_messages_payload_bytes_sum{type=\"event\",status=\"forwarded\"}[$__range]))",
+          "expr": "sum(irate(hono_messages_payload_bytes_sum{type=\"event\",status=\"forwarded\"}[$__rate_interval]))",
           "format": "time_series",
           "instant": false,
           "intervalFactor": 1,
@@ -612,7 +599,6 @@
       ],
       "thresholds": [],
       "timeFrom": null,
-      "timeRegions": [],
       "timeShift": null,
       "title": "payload",
       "tooltip": {
@@ -620,6 +606,7 @@
         "sort": 0,
         "value_type": "individual"
       },
+      "transparent": false,
       "type": "graph",
       "xaxis": {
         "buckets": null,
@@ -660,7 +647,6 @@
       "datasource": "Prometheus",
       "description": "average rate of data sent to devices as payload of commands",
       "fill": 1,
-      "fillGradient": 0,
       "gridPos": {
         "h": 8,
         "w": 8,
@@ -683,9 +669,6 @@
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
-      "options": {
-        "dataLinks": []
-      },
       "percentage": false,
       "pointradius": 5,
       "points": false,
@@ -696,21 +679,21 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(irate(hono_commands_payload_bytes_sum{direction=~\"one-way|request\",status=\"unprocessable\"}[$__range]))",
+          "expr": "sum(irate(hono_commands_payload_bytes_sum{direction=~\"one-way|request\",status=\"unprocessable\"}[$__rate_interval]))",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "unprocessable",
           "refId": "C"
         },
         {
-          "expr": "sum(irate(hono_commands_payload_bytes_sum{direction=~\"one-way|request\",status=\"undeliverable\"}[$__range]))",
+          "expr": "sum(irate(hono_commands_payload_bytes_sum{direction=~\"one-way|request\",status=\"undeliverable\"}[$__rate_interval]))",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "undeliverable",
           "refId": "B"
         },
         {
-          "expr": "sum(irate(hono_commands_payload_bytes_sum{direction=~\"one-way|request\",status=\"forwarded\"}[$__range]))",
+          "expr": "sum(irate(hono_commands_payload_bytes_sum{direction=~\"one-way|request\",status=\"forwarded\"}[$__rate_interval]))",
           "format": "time_series",
           "instant": false,
           "intervalFactor": 1,
@@ -720,7 +703,6 @@
       ],
       "thresholds": [],
       "timeFrom": null,
-      "timeRegions": [],
       "timeShift": null,
       "title": "payload",
       "tooltip": {
@@ -728,6 +710,7 @@
         "sort": 0,
         "value_type": "individual"
       },
+      "transparent": false,
       "type": "graph",
       "xaxis": {
         "buckets": null,
@@ -768,7 +751,6 @@
       "datasource": "Prometheus",
       "description": "average rate of valid telemetry messages received from devices which could not be delivered downstream",
       "fill": 1,
-      "fillGradient": 0,
       "gridPos": {
         "h": 8,
         "w": 8,
@@ -789,9 +771,6 @@
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null as zero",
-      "options": {
-        "dataLinks": []
-      },
       "percentage": false,
       "pointradius": 5,
       "points": false,
@@ -802,14 +781,14 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "(100 * sum(irate(hono_messages_received_seconds_count{type=\"telemetry\",qos=\"0\",status=\"undeliverable\"}[$__range])))\n/\nsum(irate(hono_messages_received_seconds_count{type=\"telemetry\",qos=\"0\"}[$__range]))",
+          "expr": "(100 * sum(irate(hono_messages_received_seconds_count{type=\"telemetry\",qos=\"0\",status=\"undeliverable\"}[$__rate_interval])))\n/\nsum(irate(hono_messages_received_seconds_count{type=\"telemetry\",qos=\"0\"}[$__rate_interval]))",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "QoS 0",
           "refId": "C"
         },
         {
-          "expr": "(100 * sum(irate(hono_messages_received_seconds_count{type=\"telemetry\",qos=\"1\",status=\"undeliverable\"}[$__range])))\n/\nsum(irate(hono_messages_received_seconds_count{type=\"telemetry\",qos=\"1\"}[$__range]))",
+          "expr": "(100 * sum(irate(hono_messages_received_seconds_count{type=\"telemetry\",qos=\"1\",status=\"undeliverable\"}[$__rate_interval])))\n/\nsum(irate(hono_messages_received_seconds_count{type=\"telemetry\",qos=\"1\"}[$__rate_interval]))",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "QoS 1",
@@ -835,7 +814,6 @@
         }
       ],
       "timeFrom": null,
-      "timeRegions": [],
       "timeShift": null,
       "title": "undeliverable rate",
       "tooltip": {
@@ -843,6 +821,7 @@
         "sort": 0,
         "value_type": "individual"
       },
+      "transparent": false,
       "type": "graph",
       "xaxis": {
         "buckets": null,
@@ -883,7 +862,6 @@
       "datasource": "Prometheus",
       "description": "average rate of valid events received from devices which could not be delivered downstream",
       "fill": 1,
-      "fillGradient": 0,
       "gridPos": {
         "h": 8,
         "w": 8,
@@ -904,9 +882,6 @@
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null as zero",
-      "options": {
-        "dataLinks": []
-      },
       "percentage": false,
       "pointradius": 5,
       "points": false,
@@ -917,7 +892,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "(100 * sum(irate(hono_messages_received_seconds_count{type=\"event\",status=\"undeliverable\"}[$__range])))\n/\nsum(irate(hono_messages_received_seconds_count{type=\"event\"}[$__range]))",
+          "expr": "(100 * sum(irate(hono_messages_received_seconds_count{type=\"event\",status=\"undeliverable\"}[$__rate_interval])))\n/\nsum(irate(hono_messages_received_seconds_count{type=\"event\"}[$__rate_interval]))",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "not forwarded",
@@ -943,7 +918,6 @@
         }
       ],
       "timeFrom": null,
-      "timeRegions": [],
       "timeShift": null,
       "title": "undeliverable rate",
       "tooltip": {
@@ -951,6 +925,7 @@
         "sort": 0,
         "value_type": "individual"
       },
+      "transparent": false,
       "type": "graph",
       "xaxis": {
         "buckets": null,
@@ -991,7 +966,6 @@
       "datasource": "Prometheus",
       "description": "average rate of valid commands received from applications which could not be delivered to devices",
       "fill": 1,
-      "fillGradient": 0,
       "gridPos": {
         "h": 8,
         "w": 8,
@@ -1012,9 +986,6 @@
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null as zero",
-      "options": {
-        "dataLinks": []
-      },
       "percentage": false,
       "pointradius": 5,
       "points": false,
@@ -1025,7 +996,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "(100 * sum(irate(hono_commands_received_seconds_count{direction=~\"one-way|request\",status=\"undeliverable\"}[$__range])))\n/\nsum(irate(hono_commands_received_seconds_count{direction=~\"one-way|request\"}[$__range]))",
+          "expr": "(100 * sum(irate(hono_commands_received_seconds_count{direction=~\"one-way|request\",status=\"undeliverable\"}[$__rate_interval])))\n/\nsum(irate(hono_commands_received_seconds_count{direction=~\"one-way|request\"}[$__rate_interval]))",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "not forwarded",
@@ -1051,7 +1022,6 @@
         }
       ],
       "timeFrom": null,
-      "timeRegions": [],
       "timeShift": null,
       "title": "undeliverable rate",
       "tooltip": {
@@ -1059,6 +1029,7 @@
         "sort": 0,
         "value_type": "individual"
       },
+      "transparent": false,
       "type": "graph",
       "xaxis": {
         "buckets": null,
@@ -1104,7 +1075,6 @@
       },
       "id": 65,
       "links": [],
-      "options": {},
       "pageSize": null,
       "scroll": true,
       "showHeader": true,
@@ -1175,7 +1145,7 @@
     }
   ],
   "refresh": "10s",
-  "schemaVersion": 19,
+  "schemaVersion": 16,
   "style": "dark",
   "tags": [],
   "templating": {

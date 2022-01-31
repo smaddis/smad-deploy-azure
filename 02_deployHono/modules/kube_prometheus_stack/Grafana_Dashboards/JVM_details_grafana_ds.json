@@ -15,7 +15,7 @@
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
-  "iteration": 1618328612727,
+  "iteration": 1543834182381,
   "links": [],
   "panels": [
     {
@@ -38,7 +38,6 @@
       "dashes": false,
       "datasource": "Prometheus",
       "fill": 1,
-      "fillGradient": 0,
       "gridPos": {
         "h": 8,
         "w": 11,
@@ -61,9 +60,6 @@
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
-      "options": {
-        "dataLinks": []
-      },
       "percentage": false,
       "pointradius": 5,
       "points": false,
@@ -101,7 +97,6 @@
       ],
       "thresholds": [],
       "timeFrom": null,
-      "timeRegions": [],
       "timeShift": null,
       "title": "JVM memory",
       "tooltip": {
@@ -183,7 +178,6 @@
       "maxDataPoints": 100,
       "nullPointMode": "connected",
       "nullText": null,
-      "options": {},
       "postfix": "",
       "postfixFontSize": "50%",
       "prefix": "",
@@ -232,7 +226,6 @@
       "dashes": false,
       "datasource": "Prometheus",
       "fill": 1,
-      "fillGradient": 0,
       "gridPos": {
         "h": 8,
         "w": 10,
@@ -255,9 +248,6 @@
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
-      "options": {
-        "dataLinks": []
-      },
       "percentage": false,
       "pointradius": 5,
       "points": false,
@@ -273,14 +263,14 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(rate(jvm_gc_pause_seconds_sum{host=~\"$instance\"}[$__interval]))",
+          "expr": "sum(rate(jvm_gc_pause_seconds_sum{host=~\"$instance\"}[$__rate_interval]))",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "GC Pause - {{host}}",
           "refId": "A"
         },
         {
-          "expr": "rate(jvm_gc_memory_promoted_bytes_total{host=~\"$instance\"}[$__interval])",
+          "expr": "rate(jvm_gc_memory_promoted_bytes_total{host=~\"$instance\"}[$__rate_interval])",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "Allocated - {{host}}",
@@ -289,7 +279,6 @@
       ],
       "thresholds": [],
       "timeFrom": null,
-      "timeRegions": [],
       "timeShift": null,
       "title": "JVM GC",
       "tooltip": {
@@ -348,7 +337,6 @@
       "dashes": false,
       "datasource": "Prometheus",
       "fill": 1,
-      "fillGradient": 0,
       "gridPos": {
         "h": 9,
         "w": 11,
@@ -369,9 +357,6 @@
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
-      "options": {
-        "dataLinks": []
-      },
       "percentage": false,
       "pointradius": 5,
       "points": false,
@@ -398,7 +383,6 @@
       ],
       "thresholds": [],
       "timeFrom": null,
-      "timeRegions": [],
       "timeShift": null,
       "title": "CPU usage",
       "tooltip": {
@@ -478,7 +462,6 @@
       "maxDataPoints": 100,
       "nullPointMode": "connected",
       "nullText": null,
-      "options": {},
       "postfix": "",
       "postfixFontSize": "50%",
       "prefix": "",
@@ -526,7 +509,6 @@
       "dashes": false,
       "datasource": "Prometheus",
       "fill": 1,
-      "fillGradient": 0,
       "gridPos": {
         "h": 9,
         "w": 10,
@@ -547,9 +529,6 @@
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
-      "options": {
-        "dataLinks": []
-      },
       "percentage": false,
       "pointradius": 5,
       "points": false,
@@ -569,7 +548,6 @@
       ],
       "thresholds": [],
       "timeFrom": null,
-      "timeRegions": [],
       "timeShift": null,
       "title": "Open Files",
       "tooltip": {
@@ -649,7 +627,6 @@
       "maxDataPoints": 100,
       "nullPointMode": "connected",
       "nullText": null,
-      "options": {},
       "postfix": "",
       "postfixFontSize": "50%",
       "prefix": "",
@@ -710,7 +687,6 @@
       "dashes": false,
       "datasource": "Prometheus",
       "fill": 1,
-      "fillGradient": 0,
       "gridPos": {
         "h": 8,
         "w": 11,
@@ -733,9 +709,6 @@
       "linewidth": 1,
       "links": [],
       "nullPointMode": "null",
-      "options": {
-        "dataLinks": []
-      },
       "percentage": false,
       "pointradius": 5,
       "points": false,
@@ -772,7 +745,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "rate(logback_events_total{host=~\"$instance\"}[$__interval])",
+          "expr": "rate(logback_events_total{host=~\"$instance\"}[$__rate_interval])",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{level}} - {{host}}",
@@ -781,7 +754,6 @@
       ],
       "thresholds": [],
       "timeFrom": null,
-      "timeRegions": [],
       "timeShift": null,
       "title": "logback",
       "tooltip": {
@@ -861,7 +833,6 @@
       "maxDataPoints": 100,
       "nullPointMode": "connected",
       "nullText": null,
-      "options": {},
       "postfix": "",
       "postfixFontSize": "50%",
       "prefix": "",
@@ -943,7 +914,6 @@
       "maxDataPoints": 100,
       "nullPointMode": "connected",
       "nullText": null,
-      "options": {},
       "postfix": "",
       "postfixFontSize": "50%",
       "prefix": "",
@@ -1025,7 +995,6 @@
       "maxDataPoints": 100,
       "nullPointMode": "connected",
       "nullText": null,
-      "options": {},
       "postfix": "",
       "postfixFontSize": "50%",
       "prefix": "",
@@ -1107,7 +1076,6 @@
       "maxDataPoints": 100,
       "nullPointMode": "connected",
       "nullText": null,
-      "options": {},
       "postfix": "",
       "postfixFontSize": "50%",
       "prefix": "",
@@ -1150,7 +1118,7 @@
     }
   ],
   "refresh": "10s",
-  "schemaVersion": 19,
+  "schemaVersion": 16,
   "style": "dark",
   "tags": [],
   "templating": {
@@ -1162,7 +1130,6 @@
           "value": "$__all"
         },
         "datasource": "Prometheus",
-        "definition": "",
         "hide": 0,
         "includeAll": true,
         "label": null,
