@@ -55,7 +55,7 @@ prometheus:
             - default
           selectors:
           - role: pod
-            label: app.kubernetes.io/instance=hono,helm.sh/chart=hono-1.9.8
+            label: app.kubernetes.io/instance=hono,helm.sh/chart=hono-1.10.20
         tls_config:
           insecure_skip_verify: true
         # https://github.com/eclipse/packages/blob/9f514b9dfd6734dfb196ba8c6b1151a431bbfd7b/charts/hono/templates/_helpers.tpl#L123-L130

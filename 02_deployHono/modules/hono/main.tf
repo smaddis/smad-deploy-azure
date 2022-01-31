@@ -9,20 +9,6 @@ resource "helm_release" "mongodb-devicereg" {
   values = [
     file("${path.module}/mongo_values.yaml")
   ]
-
-  set_sensitive {
-    name  = "auth.rootPassword"
-    value = var.mongodb_rootPassword
-  }
-  set_sensitive {
-    name  = "auth.password"
-    value = var.mongodb_password
-  }
-  set_sensitive {
-    name  = "auth.username"
-    value = var.mongodb_username
-  }
-
 }
 # https://github.com/eclipse/packages/tree/83abeda25c0efd9446713aaa828ff4177ce4b27b/charts/hono
 resource "helm_release" "hono" {
@@ -30,7 +16,7 @@ resource "helm_release" "hono" {
 
   repository      = "https://eclipse.org/packages/charts"
   chart           = "hono"
-  version         = "1.9.8"
+  version         = "1.10.21"
   cleanup_on_fail = "true"
   depends_on      = [helm_release.mongodb-devicereg]
   values = [

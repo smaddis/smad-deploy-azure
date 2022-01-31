@@ -9,12 +9,25 @@ persistence:
 metrics:
   enabled: true
 auth:
-  database: "honodb"
+  enabled: true
+  rootPassword: "root-secret"
+  usernames:
+    - "device-registry@HONO"
+  passwords:
+    - "hono-secret"
+  databases:
+    - "honodb"
 volumePermissions:
   enabled: true
 service:
+  type: ClusterIP
   nameOverride: "mongodb-devicereg"
   port: 27017
+  targetPort: 27017
+useStatefulSet: false
+replicaSet:
+  enabled: false
+nameOverride: "mongodb-devicereg"
 
 #architecture: "standalone"
 #useStatefulSet: true
