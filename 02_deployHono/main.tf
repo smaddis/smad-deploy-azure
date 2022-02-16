@@ -41,6 +41,7 @@ module "persistent_storage" {
   separate_storage_rg_name = data.terraform_remote_state.storagestate.outputs.rg_name
   storage_share_influx     = data.terraform_remote_state.storagestate.outputs.storage_share_influx
   storage_share_mongo      = data.terraform_remote_state.storagestate.outputs.storage_share_mongo
+  storage_share_dr         = data.terraform_remote_state.storagestate.outputs.storage_share_dr
   storage_share_kafka      = data.terraform_remote_state.storagestate.outputs.storage_share_kafka
   storage_share_zookeeper  = data.terraform_remote_state.storagestate.outputs.storage_share_zookeeper
   storage_acc_name         = data.terraform_remote_state.storagestate.outputs.storage_acc_name
@@ -48,12 +49,12 @@ module "persistent_storage" {
 }
 
 module "kafka" {
-  depends_on = [module.persistent_storage, module.mongodb]
+  depends_on = [module.persistent_storage, module.mongo_telemetry]
   source     = "./modules/kafka"
 }
 
 module "hono" {
-  depends_on = [module.persistent_storage, module.mongodb, module.kafka]
+  depends_on = [module.persistent_storage, module.kafka]
   source     = "./modules/hono"
 }
 
@@ -62,9 +63,9 @@ module "influxdb" {
   source     = "./modules/influxdb"
 }
 
-module "mongodb" {
+module "mongo_telemetry" {
   depends_on = [module.persistent_storage]
-  source     = "./modules/mongodb"
+  source     = "./modules/mongo_telemetry"
 }
 
 module "kube_prometheus_stack" {

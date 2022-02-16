@@ -1,0 +1,33 @@
+fullnameOverride: "mongodb-telemetry"
+architecture: "standalone"
+persistence:
+  enabled: true
+  existingClaim: "mongopvc"
+  mountPath: /bitnami/mongodb
+  subPath: telemetry
+  accessModes: "ReadWriteMany"
+metrics:
+  enabled: true
+auth:
+  enabled: true
+  rootPassword: root
+  usernames:
+    - root
+    - connect
+  passwords:
+    - root
+    - connect
+  databases:
+    - telemetry
+    - mydb
+volumePermissions:
+  enabled: true
+service:
+  type: ClusterIP
+  nameOverride: "mongodb-telemetry"
+  port: 28018
+  targetPort: 28018
+useStatefulSet: false
+replicaSet:
+  enabled: false
+nameOverride: "mongodb-telemetry"

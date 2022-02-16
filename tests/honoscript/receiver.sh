@@ -14,7 +14,7 @@ java -jar hono-cli-1.9.0-exec.jar \
 --tenant.id=$MY_TENANT \
 --hono.kafka.commonClientConfig.bootstrap.servers=${DOMAIN_NAME}:${KAFKA_PORT} \
 --hono.kafka.commonClientConfig.security.protocol=SASL_PLAINTEXT \
---hono.kafka.commonClientConfig.sasl.jaas.config="org.apache.kafka.common.security.scram.ScramLoginModule required username=\"hono\" password=\"hono-secret\";" \
+--hono.kafka.commonClientConfig.sasl.jaas.config="org.apache.kafka.common.security.plain.PlainLoginModule required username=\"hono\" password=\"hono-secret\";" \
 --hono.kafka.commonClientConfig.sasl.mechanism=PLAIN
 #--hono.kafka.commonClientConfig.ssl.truststore.location=$KAFKA_TRUSTSTORE_PATH \
 #--hono.kafka.commonClientConfig.ssl.truststore.password=honotrust \

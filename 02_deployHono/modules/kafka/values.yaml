@@ -1,14 +1,13 @@
-volumePermissions:
-  enabled: true
 livenessProbe:
   initialDelaySeconds: 700
 readinessProbe:
   initialDelaySeconds: 200
-logsDirs: /bitnami/kafka/data2
+logsDirs: /bitnami/kafka/data
 logFlushIntervalMs: 500
 logRetentionCheckIntervalMs: 30000
 logRetentionHours: 2
 persistence:
+  enabled: true
   existingClaim: "kafkapvc"
   size: 5Gi
 zookeeper:
@@ -33,9 +32,7 @@ externalAccess:
     enabled: true
 serviceAccount:
   create: true
-rbac:
-  create: true
-nameOverride: kafka
+fullnameOverride: kafka
 service:
   ports:
     client: 9092
@@ -81,6 +78,7 @@ extraDeploy:
               command:
                 - /bin/bash
                 - -ec
+                - sleep 300d
                 - |
                   /opt/bitnami/kafka/bin/connect-standalone.sh /opt/bitnami/kafka/config/connect-standalone.properties /opt/bitnami/kafka/config/mongodb.properties
               ports:
@@ -126,8 +124,8 @@ extraDeploy:
           username="hono" \
           password="hono-secret";
       mongodb.properties: |-
-        connection.uri=mongodb://user:"root-secret"@mongodb.default.svc.cluster.local:27017
-        name="mongodb"
+        connection.uri="mongodb-telemetry"://admin:root@mongodb-telemetry.default.svc.cluster.local:28018
+        name="mongodb-telemetry"
         topics=mytopic
         connector.class=com.mongodb.kafka.connect.MongoSinkConnector
         tasks.max=1

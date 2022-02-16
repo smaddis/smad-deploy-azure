@@ -59,7 +59,11 @@ resource "azurerm_storage_share" "mongo_share" {
   storage_account_name = azurerm_storage_account.storage_account.name
   quota                = 10
 }
-
+resource "azurerm_storage_share" "dr_share" {
+  name                 = "dr-share${terraform.workspace}"
+  storage_account_name = azurerm_storage_account.storage_account.name
+  quota                = 10
+}
 resource "azurerm_storage_share" "kafka_share" {
   name                 = "kafka-share${terraform.workspace}"
   storage_account_name = azurerm_storage_account.storage_account.name
@@ -70,13 +74,4 @@ resource "azurerm_storage_share" "zookeeper_share" {
   name                 = "zookeeper-share${terraform.workspace}"
   storage_account_name = azurerm_storage_account.storage_account.name
   quota                = 10
-}
-
-resource "azurerm_managed_disk" "mongo_disk" {
-  name                 = "mongo_disk${terraform.workspace}"
-  location             = azurerm_resource_group.storage_rg.location
-  resource_group_name  = azurerm_resource_group.storage_rg.name
-  storage_account_type = "Standard_LRS"
-  create_option        = "Empty"
-  disk_size_gb         = "8"
 }
