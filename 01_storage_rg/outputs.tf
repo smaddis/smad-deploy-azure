@@ -17,6 +17,9 @@ output "storage_acc_key" {
 output "storage_share_mongo" {
   value = azurerm_storage_share.mongo_share.name
 }
+output "storage_share_dr" {
+  value = azurerm_storage_share.dr_share.name
+}
 output "storage_share_kafka" {
   value = azurerm_storage_share.kafka_share.name
 }

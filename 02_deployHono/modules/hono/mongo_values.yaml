@@ -1,9 +1,10 @@
+fullnameOverride: "devicereg"
 architecture: "standalone"
 persistence:
   enabled: true
-  existingClaim: "mongopvc"
+  existingClaim: "device-reg-pvc"
   mountPath: /bitnami/mongodb
-  subPath: device-reg
+  subPath: "device-reg"
   accessModes: "ReadWriteMany"
 #useStatefulSet: true
 metrics:
@@ -12,7 +13,7 @@ auth:
   enabled: true
   rootPassword: "root-secret"
   usernames:
-    - "device-registry@HONO"
+    - "honouser"
   passwords:
     - "hono-secret"
   databases:
@@ -21,13 +22,13 @@ volumePermissions:
   enabled: true
 service:
   type: ClusterIP
-  nameOverride: "mongodb-devicereg"
+  nameOverride: "devicereg"
   port: 27017
   targetPort: 27017
 useStatefulSet: false
 replicaSet:
   enabled: false
-nameOverride: "mongodb-devicereg"
+nameOverride: "devicereg"
 
 #architecture: "standalone"
 #useStatefulSet: true

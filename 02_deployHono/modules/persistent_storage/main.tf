@@ -43,7 +43,21 @@ resource "kubernetes_persistent_volume_claim" "mongopvc" {
     volume_name = kubernetes_persistent_volume.mongo_volume.metadata.0.name
   }
 }
-
+resource "kubernetes_persistent_volume_claim" "device-reg-pvc" {
+  metadata {
+    name = "device-reg-pvc"
+  }
+  spec {
+    access_modes       = ["ReadWriteMany"]
+    storage_class_name = kubernetes_storage_class.azure_file_retain.metadata.0.name
+    resources {
+      requests = {
+        storage = "8Gi"
+      }
+    }
+    volume_name = kubernetes_persistent_volume.device_reg_volume.metadata.0.name
+  }
+}
 resource "kubernetes_persistent_volume_claim" "influxpvc" {
   metadata {
     name = "influxpvc"
@@ -134,6 +148,32 @@ resource "kubernetes_persistent_volume" "mongo_volume" {
       azure_file {
         secret_name = kubernetes_secret.storage_secret.metadata.0.name
         share_name  = var.storage_share_mongo
+      }
+    }
+  }
+}
+
+resource "kubernetes_persistent_volume" "device_reg_volume" {
+  metadata {
+    name = "device-reg-pvc"
+  }
+  spec {
+    capacity = {
+      storage = "8Gi"
+    }
+    access_modes                     = ["ReadWriteMany"]
+    storage_class_name               = kubernetes_storage_class.azure_file_retain.metadata.0.name
+    persistent_volume_reclaim_policy = "Retain"
+    mount_options = ["dir_mode=0777",
+      "file_mode=0777",
+      "uid=1001",
+      "gid=1001",
+      "mfsymlinks",
+    "nobrl"]
+    persistent_volume_source {
+      azure_file {
+        secret_name = kubernetes_secret.storage_secret.metadata.0.name
+        share_name  = var.storage_share_dr
       }
     }
   }

@@ -14,7 +14,7 @@ deviceRegistryExample:
   addExampleData: false
   mongoDBBasedDeviceRegistry:
     mongodb:
-      host: "mongodb-devicereg"
+      host: "devicereg"
       port: 27017
       dbName: "honodb"
       username: "honouser"

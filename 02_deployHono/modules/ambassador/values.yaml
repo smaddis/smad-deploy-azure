@@ -18,7 +18,7 @@ service:
       port: 28080
       targetPort: 28080
     - name: dispatch-router
-      port: 15671
+      port: 5671
       targetPort: 15671
     - name: grafana
       port: 3000
@@ -29,9 +29,9 @@ service:
     - name: prometheus
       port: 9090
       targetPort: 9090
+    - name: devicereg
+      port: 27017
+      targetPort: 27017
     - name: kafka
       port: 9092
       targetPort: 9092
-    - name: mongodb
-      port: 27017
-      targetPort: 27017

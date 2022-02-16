@@ -1,6 +1,6 @@
 # https://github.com/bitnami/charts/tree/ac496766e033c7d068094122164ef318c46fba15/bitnami/mongodb
-resource "helm_release" "mongodb-devicereg" {
-  name = "mongodb-devicereg"
+resource "helm_release" "devicereg" {
+  name = "devicereg"
 
   repository      = "https://charts.bitnami.com/bitnami"
   chart           = "mongodb"
@@ -18,7 +18,7 @@ resource "helm_release" "hono" {
   chart           = "hono"
   version         = "1.10.21"
   cleanup_on_fail = "true"
-  depends_on      = [helm_release.mongodb-devicereg]
+  depends_on      = [helm_release.devicereg]
   values = [
     file("${path.module}/values.yaml")
   ]
