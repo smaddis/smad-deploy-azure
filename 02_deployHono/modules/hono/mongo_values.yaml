@@ -1,0 +1,51 @@
+architecture: "standalone"
+persistence:
+  enabled: true
+  existingClaim: "mongopvc"
+  mountPath: /bitnami/mongodb
+  subPath: device-reg
+  accessModes: "ReadWriteMany"
+#useStatefulSet: true
+metrics:
+  enabled: true
+auth:
+  enabled: true
+  rootPassword: "root-secret"
+  usernames:
+    - "device-registry@HONO"
+  passwords:
+    - "hono-secret"
+  databases:
+    - "honodb"
+volumePermissions:
+  enabled: true
+service:
+  type: ClusterIP
+  nameOverride: "mongodb-devicereg"
+  port: 27017
+  targetPort: 27017
+useStatefulSet: false
+replicaSet:
+  enabled: false
+nameOverride: "mongodb-devicereg"
+
+#architecture: "standalone"
+#useStatefulSet: true
+#auth: 
+#  enabled: true
+#  database: "honodb"
+#persistence:
+#  enabled: true
+#  existingClaim: "mongopvc"
+#  storageClass: "azure-disk-retain"
+#  accessModes: "ReadWriteMany"
+#metrics:
+#  enabled: true
+
+# Uncomment these if you want the DB to be externally available. NB! Remember that this 
+# script also has auth credentials, so use external access with caution.
+# 
+# externalAccess:
+#   enabled: true
+# service:
+#   type: "LoadBalancer"

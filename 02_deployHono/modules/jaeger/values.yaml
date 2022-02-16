@@ -1,0 +1,12 @@
+jaeger:
+ create: true
+ spec:
+    strategy: allInOne
+    allInOne:
+      image: jaegertracing/all-in-one:1.26
+      options:
+          log-level: debug
+          query:
+            base-path: /jaeger
+    ingress:
+      enabled: false

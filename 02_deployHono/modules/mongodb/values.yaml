@@ -1,0 +1,15 @@
+architecture: "replicaset"
+persistence:
+  enabled: false
+#  existingClaim: "mongopvc"
+useStatefulSet: true
+metrics:
+  enabled: true
+replicaCount: 2
+auth:
+  database: "telemetry"
+service:
+  port: 28018
+ingress:
+  host:
+    - name: "mongo-telemetry"

@@ -1,0 +1,34 @@
+prometheus:
+  createInstance: false
+jaegerBackendExample:
+  enabled: false
+jaegerAgentConf:
+  REPORTER_GRPC_HOST_PORT: "jaeger-operator-jaeger-collector:14250"
+grafana:
+  enabled: false
+mongodb:
+  createInstance: false
+deviceRegistryExample:
+  enabled: true
+  type: mongodb
+  addExampleData: false
+  mongoDBBasedDeviceRegistry:
+    mongodb:
+      host: "mongodb-devicereg"
+      port: 27017
+      dbName: "honodb"
+      username: "honouser"
+      password: "hono-secret"
+adapters:
+  http:
+    enabled: false
+  kafkaMessagingSpec:
+    commonClientConfig:
+      bootstrap.servers: kafka-0.kafka-headless.default.svc.cluster.local:9092
+      security.protocol: SASL_PLAINTEXT
+      sasl.mechanism: SCRAM-SHA-512
+      sasl.jaas.config: "org.apache.kafka.common.security.scram.ScramLoginModule required username=\"hono\" password=\"hono-secret\";"
+messagingNetworkTypes:
+  - kafka
+kafkaMessagingClusterExample:
+  enabled: false
