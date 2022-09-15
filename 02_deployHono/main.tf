@@ -74,19 +74,19 @@ module "kube_prometheus_stack" {
   domain_name = local.domain_name
 }
 
-module "ambassador" {
-  depends_on     = [module.persistent_storage]
-  source         = "./modules/ambassador"
-  k8s_dns_prefix = local.k8s_dns_prefix
-}
+#module "ambassador" {
+#  depends_on     = [module.persistent_storage]
+#  source         = "./modules/ambassador"
+#  k8s_dns_prefix = local.k8s_dns_prefix
+#}
 module "jaeger" {
   depends_on = [module.k8s]
   source     = "./modules/jaeger"
 }
-module "cert_manager" {
-  depends_on = [module.ambassador, module.hono]
-  source     = "./modules/cert_manager"
-}
+#module "cert_manager" {
+#  depends_on = [module.ambassador, module.hono]
+#  source     = "./modules/cert_manager"
+#}
 
 ###########################################
 ###########################################
@@ -95,34 +95,34 @@ module "cert_manager" {
 ###########################################
 ##Hardcoded manifest count value because of https://github.com/gavinbunney/terraform-provider-kubectl/issues/58
 ## And the -temp resource doesn't work inside modules https://github.com/gavinbunney/terraform-provider-kubectl/issues/61
-data "kubectl_path_documents" "ambassador_mappings" {
-  pattern = "./ambassador_mappings.yaml"
-  vars = {
-    domain = local.domain_name
-  }
-}
-
-resource "kubectl_manifest" "ambassador_manifest" {
-  depends_on = [module.hono, module.ambassador, module.cert_manager]
-  wait       = true
-  count      = length(data.kubectl_path_documents.ambassador_mappings.documents)
-  yaml_body  = element(data.kubectl_path_documents.ambassador_mappings.documents, count.index)
-}
-
-data "kubectl_path_documents" "tls_mappings" {
-  pattern = "./tls_mappings.yaml"
-  vars = {
-    email  = local.email
-    domain = local.domain_name
-  }
-}
-
-resource "kubectl_manifest" "tls_manifest" {
-  depends_on = [module.hono, module.ambassador, module.cert_manager]
-  wait       = true
-  count      = length(data.kubectl_path_documents.tls_mappings.documents)
-  yaml_body  = element(data.kubectl_path_documents.tls_mappings.documents, count.index)
-}
+#data "kubectl_path_documents" "ambassador_mappings" {
+#  pattern = "./ambassador_mappings.yaml"
+#  vars = {
+#    domain = local.domain_name
+#  }
+#}
+#
+#resource "kubectl_manifest" "ambassador_manifest" {
+#  depends_on = [module.hono, module.ambassador, module.cert_manager]
+#  wait       = true
+#  count      = length(data.kubectl_path_documents.ambassador_mappings.documents)
+#  yaml_body  = element(data.kubectl_path_documents.ambassador_mappings.documents, count.index)
+#}
+#
+#data "kubectl_path_documents" "tls_mappings" {
+#  pattern = "./tls_mappings.yaml"
+#  vars = {
+#    email  = local.email
+#    domain = local.domain_name
+#  }
+#}
+#
+#resource "kubectl_manifest" "tls_manifest" {
+#  depends_on = [module.hono, module.ambassador, module.cert_manager]
+#  wait       = true
+#  count      = length(data.kubectl_path_documents.tls_mappings.documents)
+#  yaml_body  = element(data.kubectl_path_documents.tls_mappings.documents, count.index)
+#}
 #########################
 #########################
 #########################
